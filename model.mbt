@@ -8,6 +8,12 @@ pub(all) struct CslName {
 } derive(Debug, Eq)
 
 ///|
+pub extend CslName with Eq::{not_equal, equal}
+
+///|
+pub extend CslName with @debug.Debug::{to_repr}
+
+///|
 pub fn CslName::new(family : String, given? : String = "") -> CslName {
   {
     family,
@@ -29,6 +35,12 @@ pub(all) struct CslDate {
   mut circa : Bool
   mut literal : String
 } derive(Debug, Eq)
+
+///|
+pub extend CslDate with Eq::{not_equal, equal}
+
+///|
+pub extend CslDate with @debug.Debug::{to_repr}
 
 ///|
 pub fn CslDate::new(year : Int, month? : Int = 0, day? : Int = 0) -> CslDate {
@@ -65,6 +77,9 @@ pub(all) struct Item {
   numbers : Map[String, Int]
   booleans : Map[String, Bool]
 } derive(Debug)
+
+///|
+pub extend Item with @debug.Debug::{to_repr}
 
 ///|
 pub fn Item::new(id : String) -> Item {
@@ -187,6 +202,12 @@ pub(all) struct Cite {
   mut suffix : String
   mut suppress_author : Bool
 } derive(Debug, Eq)
+
+///|
+pub extend Cite with Eq::{not_equal, equal}
+
+///|
+pub extend Cite with @debug.Debug::{to_repr}
 
 ///|
 pub fn Cite::new(id : String) -> Cite {

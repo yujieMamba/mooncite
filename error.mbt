@@ -9,6 +9,12 @@ pub(all) enum CslError {
 } derive(Eq, Debug)
 
 ///|
+pub extend CslError with Eq::{not_equal, equal}
+
+///|
+pub extend CslError with @debug.Debug::{to_repr}
+
+///|
 pub fn CslError::message(self : CslError) -> String {
   match self {
     BadXml(s) => s

@@ -6,10 +6,16 @@ pub(all) struct XmlElem {
 } derive(Debug)
 
 ///|
+pub extend XmlElem with @debug.Debug::{to_repr}
+
+///|
 pub(all) enum XmlNode {
   Element(XmlElem)
   Text(String)
 } derive(Debug)
+
+///|
+pub extend XmlNode with @debug.Debug::{to_repr}
 
 ///|
 priv struct XmlParser {
