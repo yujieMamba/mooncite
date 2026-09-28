@@ -13,7 +13,7 @@ jobs:
         run: |
           curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
           echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
-          moon version --all
+          "$HOME/.moon/bin/moon" version --all
       - name: Format
         run: moon fmt --check
       - name: Check wasm-gc
@@ -26,3 +26,4 @@ jobs:
         run: moon check --target native --deny-warn
       - name: Test wasm-gc
         run: moon test --target wasm-gc
+
