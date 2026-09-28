@@ -1,0 +1,9 @@
+.DS_Store
+_build/
+target/
+target
+.mooncakes/
+.moonagent/
+# local diagnostic outputs
+check*.txt
+README.mbt.md
