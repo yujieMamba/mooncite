@@ -1,0 +1,25 @@
+name: MoonCite CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install MoonBit
+        uses: moonbitlang/setup@main
+      - name: Format
+        run: moon fmt --check
+      - name: Check wasm-gc
+        run: moon check --target wasm-gc --deny-warn
+      - name: Check wasm
+        run: moon check --target wasm --deny-warn
+      - name: Check js
+        run: moon check --target js --deny-warn
+      - name: Check native
+        run: moon check --target native --deny-warn
+      - name: Test wasm-gc
+        run: moon test --target wasm-gc
