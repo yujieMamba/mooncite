@@ -1,0 +1,420 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "yujieMamba/mooncite"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn assign_year_suffixes(Array[Item]) -> Unit
+
+pub fn bibliography_key(Item) -> String
+
+pub fn bibliography_statistics(Array[Item]) -> Map[String, Int]
+
+pub fn citation_has_locator(Array[Cite]) -> Bool
+
+pub fn cite_items(Array[Item], Array[Cite]) -> Array[Item]
+
+pub fn cite_to_plain_json(Cite) -> String
+
+pub fn cites_to_plain_json(Array[Cite]) -> String
+
+pub fn collapse_numeric_ranges(Array[Int]) -> String
+
+pub fn compact_whitespace(String) -> String
+
+pub fn compare_items_for_bibliography(Item, Item) -> Int
+
+pub fn date_is_range(CslDate) -> Bool
+
+pub fn date_range_text(CslDate, delimiter? : String) -> String
+
+pub fn date_sort_stamp(CslDate) -> Int64
+
+pub fn deduplicate_items(Array[Item]) -> Array[Item]
+
+pub fn first_nonempty_render(String, Array[Item]) -> String
+
+pub fn format_edition(Item) -> String
+
+pub fn format_identifier(Item, prefer_doi? : Bool) -> String
+
+pub fn format_localized_date(Locale, CslDate, form? : String) -> String
+
+pub fn format_localized_month(Locale, CslDate, String) -> String
+
+pub fn format_page_variable(Item, variable? : String) -> String
+
+pub fn format_volume_issue(Item) -> String
+
+pub fn initials_for_name(CslName, marker? : String) -> String
+
+pub fn invert_name(CslName) -> String
+
+pub fn item_author_key(Item) -> String
+
+pub fn item_author_year_key(Item) -> String
+
+pub fn item_by_id(Array[Item], String) -> Item?
+
+pub fn item_container_label(Item) -> String
+
+pub fn item_display_title(Item) -> String
+
+pub fn item_has_author(Item) -> Bool
+
+pub fn item_has_editor(Item) -> Bool
+
+pub fn item_is_book(Item) -> Bool
+
+pub fn item_is_online(Item) -> Bool
+
+pub fn item_is_periodical(Item) -> Bool
+
+pub fn item_summary(Item) -> String
+
+pub fn item_to_plain_json(Item) -> String
+
+pub fn items_to_plain_json(Array[Item]) -> String
+
+pub fn locale_debug(Locale) -> String
+
+pub fn locale_from_language(String) -> Locale
+
+pub fn locale_months(Locale) -> Array[String]
+
+pub fn locale_terms(Locale) -> Array[String]
+
+pub fn localize_and(Locale) -> String
+
+pub fn localize_et_al(Locale) -> String
+
+pub fn localize_label(Locale, String, Int) -> String
+
+pub fn localize_name_delimiter(Locale, Int) -> String
+
+pub fn merge_citation_parts(String, Array[Cite]) -> String
+
+pub fn merge_locales(Locale, Locale) -> Locale
+
+pub fn name_family_key(CslName) -> String
+
+pub fn name_given_key(CslName) -> String
+
+pub fn name_list_equal(Array[CslName], Array[CslName]) -> Bool
+
+pub fn names_equal(CslName, CslName) -> Bool
+
+pub fn normalize_page_range(String) -> String
+
+pub fn normalize_range_part(String) -> String
+
+pub fn normalize_title(String) -> String
+
+pub fn number_label(String, Int, short? : Bool) -> String
+
+pub fn page_range_end(String) -> String
+
+pub fn page_range_start(String) -> String
+
+pub fn parse_cites_json(String) -> Result[Array[Cite], CslError]
+
+pub fn parse_item_json(Json) -> Result[Item, CslError]
+
+pub fn parse_items_json(String) -> Result[Array[Item], CslError]
+
+pub fn parse_locale_xml(String) -> Result[Locale, CslError]
+
+pub fn parse_xml(String) -> Result[XmlElem, CslError]
+
+pub fn processor_capabilities() -> Array[String]
+
+pub fn processor_empty_result(String) -> Bool
+
+pub fn processor_is_deterministic(String, Array[Item]) -> Bool
+
+pub fn processor_license() -> String
+
+pub fn processor_upstream() -> String
+
+pub fn processor_version() -> String
+
+pub fn render_citation_html(String, Array[Item], Array[Cite]) -> Result[String, CslError]
+
+pub fn render_citation_text(String, Array[Item], Array[Cite]) -> Result[String, CslError]
+
+pub fn render_cite_prefix(Cite) -> String
+
+pub fn render_each_item(String, Array[Item]) -> Array[String]
+
+pub fn render_html(String, Array[Item]) -> Result[String, CslError]
+
+pub fn render_int_range(Int, Int) -> String
+
+pub fn render_many(Array[String], Array[Item]) -> Array[Result[String, CslError]]
+
+pub fn render_one(String, Item) -> Result[String, CslError]
+
+pub fn render_text(String, Array[Item]) -> Result[String, CslError]
+
+pub fn render_text_json(String, String) -> Result[String, CslError]
+
+pub fn safe_render(String, Array[Item]) -> String
+
+pub fn safe_render_html(String, Array[Item]) -> String
+
+pub fn sentence_title(String) -> String
+
+pub fn style_complexity(String) -> Map[String, Int]
+
+pub fn style_has_macro(String, String) -> Bool
+
+pub fn style_is_author_date(String) -> Bool
+
+pub fn style_is_numeric(String) -> Bool
+
+pub fn style_macro_names(String) -> Array[String]
+
+pub fn style_metadata(String) -> Map[String, String]
+
+pub fn style_render_preview(String, Item) -> Map[String, String]
+
+pub fn style_supports_bibliography(String) -> Bool
+
+pub fn style_supports_citation(String) -> Bool
+
+pub fn title_case_words(String) -> String
+
+pub fn validate_item(Item) -> Array[String]
+
+pub fn validate_items(Array[Item]) -> Map[String, Array[String]]
+
+pub fn validate_style(String) -> Array[String]
+
+pub fn with_citation_numbers(Array[Item]) -> Array[Item]
+
+// Errors
+
+// Types and methods
+pub struct Affix {
+  prefix : String
+  suffix : String
+  delimiter : String
+  text_case : String
+  font_style : String
+  font_weight : String
+  vertical_align : String
+}
+
+pub struct ChooseBranch {
+  conditions : Array[Condition]
+  match_mode : String
+  children : Array[Node]
+}
+
+pub(all) struct Cite {
+  mut id : String
+  mut locator : String
+  mut label : String
+  mut prefix : String
+  mut suffix : String
+  mut suppress_author : Bool
+} derive(Eq, @debug.Debug)
+pub fn Cite::new(String) -> Self
+
+pub enum Condition {
+  Variable(String)
+  Type(String)
+  Numeric(String)
+  IsUncertain(String)
+  IsPlural(String)
+  Position(String)
+}
+
+pub(all) struct CslDate {
+  mut year : Int
+  mut month : Int
+  mut day : Int
+  mut end_year : Int
+  mut end_month : Int
+  mut end_day : Int
+  mut circa : Bool
+  mut literal : String
+} derive(Eq, @debug.Debug)
+pub fn CslDate::new(Int, month? : Int, day? : Int) -> Self
+
+pub(all) enum CslError {
+  BadXml(String)
+  BadStyle(String)
+  BadJson(String)
+  BadItem(String)
+  MissingStyle
+} derive(Eq, @debug.Debug)
+pub fn CslError::message(Self) -> String
+
+pub(all) struct CslName {
+  mut family : String
+  mut given : String
+  mut suffix : String
+  mut dropping_particle : String
+  mut non_dropping_particle : String
+} derive(Eq, @debug.Debug)
+pub fn CslName::new(String, given? : String) -> Self
+
+pub struct DateNode {
+  variable : String
+  parts : Array[DatePart]
+  delimiter : String
+}
+
+pub struct DatePart {
+  name : String
+  form : String
+  prefix : String
+  suffix : String
+  range_delimiter : String
+  text_case : String
+}
+
+pub(all) struct Item {
+  mut id : String
+  mut title : String
+  mut container_title : String
+  mut publisher : String
+  mut publisher_place : String
+  mut volume : String
+  mut issue : String
+  mut page : String
+  mut edition : String
+  mut url : String
+  mut doi : String
+  mut item_type : String
+  mut abstract_text : String
+  names : Map[String, Array[CslName]]
+  dates : Map[String, CslDate]
+  strings : Map[String, String]
+  numbers : Map[String, Int]
+  booleans : Map[String, Bool]
+} derive(@debug.Debug)
+pub fn Item::date(Self, String) -> CslDate?
+pub fn Item::has(Self, String) -> Bool
+pub fn Item::name(Self, String) -> Array[CslName]
+pub fn Item::new(String) -> Self
+pub fn Item::number(Self, String) -> Int?
+pub fn Item::set_bool(Self, String, Bool) -> Self
+pub fn Item::set_date(Self, String, CslDate) -> Self
+pub fn Item::set_name(Self, String, Array[CslName]) -> Self
+pub fn Item::set_number(Self, String, Int) -> Self
+pub fn Item::set_string(Self, String, String) -> Self
+pub fn Item::string(Self, String) -> String
+
+pub struct Layout {
+  affix : Affix
+  children : Array[Node]
+}
+
+pub(all) struct Locale {
+  mut language : String
+  terms : Map[String, String]
+  months : Map[Int, String]
+}
+pub fn Locale::chinese() -> Self
+pub fn Locale::english() -> Self
+pub fn Locale::month(Self, Int, form? : String) -> String
+pub fn Locale::term(Self, String, form? : String) -> String
+
+pub struct NameNode {
+  variable : String
+  form : String
+  and_word : String
+  delimiter : String
+  initialize_with : String
+  initialize : Bool
+  name_as_sort_order : String
+  delimiter_precedes_last : String
+  et_al_min : Int
+  et_al_use_first : Int
+  label_variable : String
+}
+
+pub enum Node {
+  Text(Affix, TextNode)
+  Names(Affix, NameNode)
+  Number(Affix, NumberNode)
+  Date(Affix, DateNode)
+  Group(Affix, Array[Node])
+  Choose(Affix, Array[ChooseBranch])
+}
+
+pub struct NumberNode {
+  variable : String
+  form : String
+  prefix : String
+  suffix : String
+  delimiter : String
+  text_case : String
+}
+
+pub(all) struct Processor {
+  style : Style
+}
+pub fn Processor::from_style(String) -> Result[Self, CslError]
+pub fn Processor::render_bibliography(Self, Array[Item], format? : String) -> Result[String, CslError]
+pub fn Processor::render_bibliography_html(Self, Array[Item]) -> Result[String, CslError]
+pub fn Processor::render_bibliography_json(Self, String, format? : String) -> Result[String, CslError]
+pub fn Processor::render_citation(Self, Array[Item], Array[Cite], format? : String) -> Result[String, CslError]
+pub fn Processor::render_citation_html(Self, Array[Item], Array[Cite]) -> Result[String, CslError]
+pub fn Processor::render_citation_json(Self, String, String, format? : String) -> Result[String, CslError]
+
+pub struct SortKey {
+  variable : String
+  macro_name : String
+  names_min : Int
+  names_use_first : Int
+  sort_order : String
+}
+
+pub struct Style {
+  title : String
+  version : String
+  default_locale : String
+  macros : Map[String, Array[Node]]
+  citation : Layout?
+  bibliography : Layout?
+  citation_sort : Array[SortKey]
+  bibliography_sort : Array[SortKey]
+  citation_disambiguate : Bool
+  citation_collapse : String
+  citation_delimiter : String
+}
+
+pub struct TextNode {
+  variable : String
+  value : String
+  macro_name : String
+  term : String
+  form : String
+}
+
+pub(all) struct XmlElem {
+  name : String
+  attrs : Map[String, String]
+  children : Array[XmlNode]
+} derive(@debug.Debug)
+pub fn XmlElem::attr(Self, String) -> String
+pub fn XmlElem::direct_text(Self) -> String
+pub fn XmlElem::first(Self, String) -> Self?
+pub fn XmlElem::has_attr(Self, String) -> Bool
+pub fn XmlElem::kids(Self) -> Array[Self]
+pub fn XmlElem::kids_named(Self, String) -> Array[Self]
+pub fn XmlElem::text(Self) -> String
+
+pub(all) enum XmlNode {
+  Element(XmlElem)
+  Text(String)
+} derive(@debug.Debug)
+
+// Type aliases
+
+// Traits
