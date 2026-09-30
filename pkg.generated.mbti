@@ -221,7 +221,10 @@ pub(all) struct Cite {
   mut suffix : String
   mut suppress_author : Bool
 } derive(Eq, @debug.Debug)
+pub fn Cite::equal(Self, Self) -> Bool
 pub fn Cite::new(String) -> Self
+pub fn Cite::not_equal(Self, Self) -> Bool
+pub fn Cite::to_repr(Self) -> @debug.Repr
 
 pub enum Condition {
   Variable(String)
@@ -242,7 +245,10 @@ pub(all) struct CslDate {
   mut circa : Bool
   mut literal : String
 } derive(Eq, @debug.Debug)
+pub fn CslDate::equal(Self, Self) -> Bool
 pub fn CslDate::new(Int, month? : Int, day? : Int) -> Self
+pub fn CslDate::not_equal(Self, Self) -> Bool
+pub fn CslDate::to_repr(Self) -> @debug.Repr
 
 pub(all) enum CslError {
   BadXml(String)
@@ -251,7 +257,10 @@ pub(all) enum CslError {
   BadItem(String)
   MissingStyle
 } derive(Eq, @debug.Debug)
+pub fn CslError::equal(Self, Self) -> Bool
 pub fn CslError::message(Self) -> String
+pub fn CslError::not_equal(Self, Self) -> Bool
+pub fn CslError::to_repr(Self) -> @debug.Repr
 
 pub(all) struct CslName {
   mut family : String
@@ -260,7 +269,10 @@ pub(all) struct CslName {
   mut dropping_particle : String
   mut non_dropping_particle : String
 } derive(Eq, @debug.Debug)
+pub fn CslName::equal(Self, Self) -> Bool
 pub fn CslName::new(String, given? : String) -> Self
+pub fn CslName::not_equal(Self, Self) -> Bool
+pub fn CslName::to_repr(Self) -> @debug.Repr
 
 pub struct DateNode {
   variable : String
@@ -308,6 +320,7 @@ pub fn Item::set_name(Self, String, Array[CslName]) -> Self
 pub fn Item::set_number(Self, String, Int) -> Self
 pub fn Item::set_string(Self, String, String) -> Self
 pub fn Item::string(Self, String) -> String
+pub fn Item::to_repr(Self) -> @debug.Repr
 
 pub struct Layout {
   affix : Affix
@@ -409,11 +422,13 @@ pub fn XmlElem::has_attr(Self, String) -> Bool
 pub fn XmlElem::kids(Self) -> Array[Self]
 pub fn XmlElem::kids_named(Self, String) -> Array[Self]
 pub fn XmlElem::text(Self) -> String
+pub fn XmlElem::to_repr(Self) -> @debug.Repr
 
 pub(all) enum XmlNode {
   Element(XmlElem)
   Text(String)
 } derive(@debug.Debug)
+pub fn XmlNode::to_repr(Self) -> @debug.Repr
 
 // Type aliases
 

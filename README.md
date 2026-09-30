@@ -14,7 +14,21 @@ MoonCite 是一个面向 MoonBit 的 CSL（Citation Style Language）文献引�
 
 这是一个有明确边界的首版移植：覆盖常见 CSL 排版路径和可复用的数据模型，但不是对 CSL 1.0.2 全部扩展点的认证实现。复杂的脚注布局、完整的 disambiguation、BibTeX/MARC 导入、在线 DOI 查询和 PDF 排版不在当前版本范围内。
 
-## 快速开始
+## 安装与快速开始
+
+MoonCite 当前按 MoonBit 模块发布源码，要求 `moonc >= 0.10.14`。验收前不依赖 MoonCakes，直接克隆仓库即可复现：
+
+```bash
+git clone https://github.com/yujieMamba/mooncite.git
+cd mooncite
+moon version --all
+moonc -v
+moon check --target wasm-gc --deny-warn
+moon test --target wasm-gc
+```
+
+在自己的 MoonBit 模块中使用时，可先把仓库作为本地源码依赖，或复制 `moon.mod`、`moon.pkg` 和库源码到工作区；本仓库的 `cmd/main` 和 `examples/*` 已经给出完整的可运行接入方式。MoonCite 暂未上传到 `mooncakes.io`，因此 README 不把尚未提供的包版本写成可安装事实。
+
 
 ```moonbit
 let style = """
@@ -28,7 +42,7 @@ let processor = @mooncite.Processor::from_style(style).unwrap()
 let item = @mooncite.Item::new("paper")
 item.set_string("title", "A short paper")
 item.set_name("author", [@mooncite.CslName::new(family="Doe", given="Jane")])
-item.set_date("issued", @mooncite.CslDate::new([2024]))
+item.set_date("issued", @mooncite.CslDate::new(2024))
 let result = processor.render_bibliography([item])
 println(result.unwrap())
 ```
@@ -44,7 +58,7 @@ moon run examples/text-extract
 
 ## 质量与可复现性
 
-质量报告记录了本地实际运行结果，而不是估算值：实现代码超过 2,000 行，包含 9 个测试用例和 4 个 runnable examples；`wasm-gc` 检查与测试均通过。CI 会继续执行 MoonBit 的格式检查、`wasm-gc`、`wasm`、`js` 和 `native` 目标检查，并运行测试。
+质量报告记录了本地实际运行结果，而不是估算值：实现代码超过 3,000 行，包含 9 个测试用例和 4 个 runnable examples；在 `moonc v0.10.14` 下，`wasm-gc`、`wasm`、`js`、`native` 检查及 `wasm`/`js`/`wasm-gc` 测试均通过。CI 会固定检查 `moonc >= 0.10.14`，并执行 MoonBit 的格式检查、四个目标检查和测试。
 
 ## 设计取舍
 
@@ -53,4 +67,5 @@ MoonCite 借鉴 CSL 规范、citeproc 实现和 CSL-JSON 数据形状，但代�
 ## 许可证
 
 本项目采用 Apache License 2.0。规范与参考实现的来源、版本和边界见 [THIRD_PARTY.md](THIRD_PARTY.md)。
+
 

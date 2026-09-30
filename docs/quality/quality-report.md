@@ -1,6 +1,6 @@
 # MoonCite 质量报告
 
-日期：2026-09-28。以下数字来自本地仓库和命令输出，不是计划值。
+日期：2026-09-30。以下数字来自本地仓库和命令输出，不是计划值。
 
 ## 实现规模
 
@@ -20,8 +20,13 @@
 
 ## 已运行的验证
 
+- `moonc -v`：`v0.10.14+7d59c7ec9`。
+- `moon fmt --check`：通过。
 - `moon check --target wasm-gc --deny-warn`：通过。
-- `moon test --target wasm-gc`：通过，9/9。
+- `moon check --target wasm --deny-warn`：通过。
+- `moon check --target js --deny-warn`：通过。
+- `moon check --target native --deny-warn`：通过。
+- `moon test --target wasm-gc`、`wasm`、`js`：均通过，9/9。
 - 四个示例均已使用 `moon run` 启动并得到输出。
 - `moon info` 与 `moon fmt` 在提交前执行；接口变化以生成的 `.mbti` 为准。
 
