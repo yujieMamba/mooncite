@@ -29,3 +29,4 @@ jobs:
         run: moon check --target native --deny-warn
       - name: Test wasm-gc
         run: moon test --target wasm-gc
+
