@@ -22,7 +22,18 @@
 
 `moon info`、`moon fmt`、`moon fmt --check` 和 `git diff --check` 均已执行。`npm ci --prefix tools/reference --ignore-scripts` 安装锁定开发依赖成功，`npm test --prefix tools/reference` 为 17/17。
 
-CI 配置使用 Ubuntu 四目标矩阵，各自执行检查、显式构建、测试及四个示例，并验证姓名/数字关键输出；另有参考引擎任务。**配置存在不等于运行通过**，远端最终结果以对应 GitHub Actions run 为准，完成后记录在下方。
+CI 配置使用 Ubuntu 四目标矩阵，各自执行检查、显式构建、测试及四个示例，并验证姓名/数字关键输出；另有参考引擎任务。**配置存在不等于运行通过**，远端实测见下方记录。
+
+## GitHub CI 实测
+
+[Actions run 38503798106](https://github.com/yujieMamba/mooncite/actions/runs/38503798106)，对应实现提交 `980ac2620e4fe03140050c8e52d4798fdc86c91d`，2026-10-14 完成，结论 **success**。
+
+- `MoonBit (wasm-gc)`、`MoonBit (wasm)`、`MoonBit (js)`、`MoonBit (native)` 四项全部成功。
+- 每个目标完成格式检查、check、显式 build、**68/68** 测试及四个示例；native 的完整构建/测试证据来自 Ubuntu CI，而不是本机。
+- `citeproc-js differential fixtures` 成功，**17/17**。
+- CI 编译器：`v0.10.15+943464bfa (2026-10-12)`。
+
+首次 CI 发现新编译器格式/API 和跨平台 fixture 换行问题，已修复并重新验证；不将首次失败隐藏为未经验证的成功。
 
 ## 选定行为与参考软件
 

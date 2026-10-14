@@ -28,6 +28,6 @@ npm ci --prefix tools/reference --ignore-scripts
 npm test --prefix tools/reference
 ```
 
-替换为 wasm、js 或 native 可验证其他目标；native 需要系统 C 编译器。本地 Windows 缺少 C 编译器，只完成 native check，native 构建、测试和例子由 Ubuntu CI 验证。远端结果以 Actions 为准，见质量报告。
+替换为 wasm、js 或 native 可验证其他目标；native 需要系统 C 编译器。本地 Windows 缺少 C 编译器，只完成 native check，native 构建、测试和例子已在 Ubuntu CI 通过：Actions run 38503798106，四目标各 68/68，另有 17/17 参考引擎用例。链接及环境见质量报告。
 
 本说明用于技术复现，不是组织方审批表，不表示已经通过复验。
