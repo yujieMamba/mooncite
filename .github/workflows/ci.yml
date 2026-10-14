@@ -4,12 +4,23 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
-  check:
+  moonbit:
+    name: MoonBit (${{ matrix.target }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [wasm-gc, wasm, js, native]
     steps:
       - uses: actions/checkout@v4
-      - name: Install MoonBit
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install MoonBit and enforce compiler minimum
         run: |
           curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
           echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
@@ -19,13 +30,34 @@ jobs:
           test "$(printf '%s\n' 0.10.14 "$moonc_version" | sort -V | head -n1)" = "0.10.14"
       - name: Format
         run: moon fmt --check
-      - name: Check wasm-gc
-        run: moon check --target wasm-gc --deny-warn
-      - name: Check wasm
-        run: moon check --target wasm --deny-warn
-      - name: Check js
-        run: moon check --target js --deny-warn
-      - name: Check native
-        run: moon check --target native --deny-warn
-      - name: Test wasm-gc
-        run: moon test --target wasm-gc
+      - name: Check
+        run: moon check --target ${{ matrix.target }} --deny-warn
+      - name: Build
+        run: moon build --target ${{ matrix.target }} --deny-warn
+      - name: Test
+        run: moon test --target ${{ matrix.target }} --deny-warn
+      - name: Run examples and verify key outputs
+        run: |
+          moon run examples/numeric --target ${{ matrix.target }} | tee numeric.out
+          grep -Fx '[1–3, 5, 7–9]' numeric.out
+          grep -Fx '[1, 2, pp. 12-14, 3]' numeric.out
+          moon run examples/beginners --target ${{ matrix.target }} | tee names.out
+          grep -Fx '(Doe and Smith 2025)' names.out
+          moon run cmd/main --target ${{ matrix.target }}
+          moon run examples/text-extract --target ${{ matrix.target }}
+
+  reference:
+    name: citeproc-js differential fixtures
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tools/reference
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: tools/reference/package-lock.json
+      - run: npm ci --ignore-scripts
+      - run: npm test
