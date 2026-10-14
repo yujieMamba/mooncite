@@ -19,7 +19,7 @@ fn is_digit(c : Char) -> Bool {
 }
 
 ///|
-fn digit_of(c : Char) -> Int? {
+fn digit_of(c : Char) -> Int32? {
   if is_digit(c) {
     Some(c.to_int() - 48)
   } else {
@@ -57,7 +57,7 @@ fn parse_i64(text : String) -> Int64? {
 }
 
 ///|
-fn parse_int(text : String) -> Int? {
+fn parse_int(text : String) -> Int32? {
   match parse_i64(text) {
     Some(n) =>
       if n > 2147483647L || n < -2147483648L {
@@ -140,7 +140,7 @@ fn decode_entity(body : String) -> String {
 }
 
 ///|
-fn parse_hex(text : String) -> Int? {
+fn parse_hex(text : String) -> Int32? {
   if text.is_empty() {
     return None
   }
@@ -164,7 +164,7 @@ fn parse_hex(text : String) -> Int? {
 }
 
 ///|
-fn valid_xml_code(code : Int) -> Bool {
+fn valid_xml_code(code : Int32) -> Bool {
   code == 9 ||
   code == 10 ||
   code == 13 ||
@@ -174,12 +174,12 @@ fn valid_xml_code(code : Int) -> Bool {
 }
 
 ///|
-fn char_from_code(code : Int) -> String {
+fn char_from_code(code : Int32) -> String {
   if !valid_xml_code(code) {
     ""
   } else {
     let buf = StringBuilder()
-    buf.write_char(Int::unsafe_to_char(code))
+    buf.write_char(Int32::unsafe_to_char(code))
     buf.to_string()
   }
 }
@@ -224,7 +224,7 @@ fn bool_word(text : String) -> Bool {
 }
 
 ///|
-fn roman_upper(n : Int) -> String {
+fn roman_upper(n : Int32) -> String {
   if n <= 0 {
     return ""
   }
@@ -244,7 +244,7 @@ fn roman_upper(n : Int) -> String {
 }
 
 ///|
-fn ordinal_en(n : Int) -> String {
+fn ordinal_en(n : Int32) -> String {
   let abs = if n < 0 { -n } else { n }
   let mod100 = abs % 100
   let suffix = if mod100 >= 11 && mod100 <= 13 {
@@ -281,7 +281,7 @@ fn is_csl_numeric(text : String) -> Bool {
       c == '-' ||
       c == '/' ||
       c == '&' ||
-      c == Int::unsafe_to_char(0x2013) {
+      c == Int32::unsafe_to_char(0x2013) {
       i = i + 1
     } else if c == 'a' &&
       i + 2 < chars.length() &&
@@ -296,12 +296,12 @@ fn is_csl_numeric(text : String) -> Bool {
 }
 
 ///|
-fn cmp_str(a : String, b : String) -> Int {
+fn cmp_str(a : String, b : String) -> Int32 {
   a.lexical_compare(b)
 }
 
 ///|
-fn cmp_int(a : Int, b : Int) -> Int {
+fn cmp_int(a : Int32, b : Int32) -> Int32 {
   if a < b {
     -1
   } else if a > b {
@@ -428,7 +428,7 @@ fn strip_periods(text : String) -> String {
 }
 
 ///|
-fn pad2(n : Int) -> String {
+fn pad2(n : Int32) -> String {
   if n >= 0 && n < 10 {
     "0" + n.to_string()
   } else {
@@ -437,7 +437,7 @@ fn pad2(n : Int) -> String {
 }
 
 ///|
-fn year_letter(index : Int) -> String {
+fn year_letter(index : Int32) -> String {
   if index < 0 {
     return ""
   }
@@ -445,7 +445,7 @@ fn year_letter(index : Int) -> String {
   let mut n = index
   let mut chars : Array[Char] = []
   while true {
-    chars.push(Int::unsafe_to_char(97 + n % 26))
+    chars.push(Int32::unsafe_to_char(97 + n % 26))
     n = n / 26 - 1
     if n < 0 {
       break

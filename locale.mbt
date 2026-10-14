@@ -4,7 +4,7 @@
 pub(all) struct Locale {
   mut language : String
   terms : Map[String, String]
-  months : Map[Int, String]
+  months : Map[Int32, String]
 }
 
 ///|
@@ -18,7 +18,7 @@ pub fn Locale::english() -> Locale {
   terms["volume"] = "volume"
   terms["issue"] = "issue"
   terms["no date"] = "n.d."
-  let months : Map[Int, String] = Map([])
+  let months : Map[Int32, String] = Map([])
   months[1] = "January"
   months[2] = "February"
   months[3] = "March"
@@ -65,7 +65,7 @@ pub fn Locale::chinese() -> Locale {
 pub fn Locale::term(
   self : Locale,
   name : String,
-  form? : String = "long",
+  form~ : String = "long",
 ) -> String {
   let key = if form == "short" && name == "page" {
     "page"
@@ -90,8 +90,8 @@ fn short_month(value : String) -> String {
 ///|
 pub fn Locale::month(
   self : Locale,
-  number : Int,
-  form? : String = "long",
+  number : Int32,
+  form~ : String = "long",
 ) -> String {
   match self.months.get(number) {
     Some(long) =>
@@ -156,7 +156,7 @@ pub fn format_localized_month(
 pub fn format_localized_date(
   locale : Locale,
   date : CslDate,
-  form? : String = "long",
+  form~ : String = "long",
 ) -> String {
   if date.literal != "" {
     return date.literal
@@ -174,7 +174,7 @@ pub fn format_localized_date(
 }
 
 ///|
-pub fn localize_name_delimiter(locale : Locale, count : Int) -> String {
+pub fn localize_name_delimiter(locale : Locale, count : Int32) -> String {
   if locale.language.has_prefix("zh") {
     "、"
   } else if count > 1 {
@@ -198,7 +198,7 @@ pub fn localize_et_al(locale : Locale) -> String {
 pub fn localize_label(
   locale : Locale,
   variable : String,
-  count : Int,
+  count : Int32,
 ) -> String {
   if variable == "page" {
     if count == 1 {

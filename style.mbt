@@ -28,8 +28,8 @@ pub struct NameNode {
   initialize : Bool
   name_as_sort_order : String
   delimiter_precedes_last : String
-  et_al_min : Int
-  et_al_use_first : Int
+  et_al_min : Int32
+  et_al_use_first : Int32
   label_variable : String
   options : Map[String, String]
   name_affix : Affix
@@ -109,8 +109,8 @@ pub struct Layout {
 pub struct SortKey {
   variable : String
   macro_name : String
-  names_min : Int
-  names_use_first : Int
+  names_min : Int32
+  names_use_first : Int32
   sort_order : String
 }
 

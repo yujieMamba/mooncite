@@ -19,6 +19,6 @@ moon fmt
 moon test --target wasm-gc --deny-warn
 ```
 
-生成器先执行参考引擎验证，再写 MoonBit 测试；普通 npm test 检查 fixture SHA-256 与生成文件头是否一致，避免遗漏重新生成。最小英文 locale 由本项目自行编写，仅服务于这些测试，没有复制外部 locale 文件。
+生成器先执行参考引擎验证，再写 MoonBit 测试；普通 npm test 检查 规范化 LF 换行后的 fixture SHA-256 与生成文件头是否一致，避免遗漏重新生成。最小英文 locale 由本项目自行编写，仅服务于这些测试，没有复制外部 locale 文件。
 
 范围限制：不覆盖完整 CSL、复杂脚注/消歧、多语言回退，也不是性能测试；`after-collapse-delimiter` 不在对照范围。上游引擎许可见根目录 THIRD_PARTY.md 和安装包 LICENSE。node_modules 被忽略，不提交上游源码。

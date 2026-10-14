@@ -27,7 +27,7 @@ jobs:
           "$HOME/.moon/bin/moon" version --all
           "$HOME/.moon/bin/moonc" -v
           moonc_version="$("$HOME/.moon/bin/moonc" -v | sed -E 's/^v([0-9]+\.[0-9]+\.[0-9]+).*/\1/')"
-          test "$(printf '%s\n' 0.10.14 "$moonc_version" | sort -V | head -n1)" = "0.10.14"
+          test "$(printf '%s\n' 0.10.15 "$moonc_version" | sort -V | head -n1)" = "0.10.15"
       - name: Format
         run: moon fmt --check
       - name: Check

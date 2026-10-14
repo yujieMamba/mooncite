@@ -1,8 +1,8 @@
 ///|
 fn citation_style(
   body : String,
-  options? : String = "",
-  delimiter? : String = ", ",
+  options~ : String = "",
+  delimiter~ : String = ", ",
 ) -> String {
   "<style version=\"1.0\"><info><title>Regression</title></info><citation " +
   options +
@@ -14,7 +14,7 @@ fn citation_style(
 }
 
 ///|
-fn numbered_items(count : Int) -> Array[@mooncite.Item] {
+fn numbered_items(count : Int32) -> Array[@mooncite.Item] {
   let items = []
   for i = 1; i <= count; i = i + 1 {
     items.push(
@@ -44,7 +44,7 @@ fn authors() -> Array[@mooncite.CslName] {
 ///|
 fn names_output(
   name_xml : String,
-  names? : Array[@mooncite.CslName] = authors(),
+  names~ : Array[@mooncite.CslName] = authors(),
 ) -> String {
   let style = "<style version=\"1.0\"><bibliography><layout><names variable=\"author\">" +
     name_xml +

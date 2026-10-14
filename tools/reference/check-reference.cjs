@@ -4,7 +4,8 @@ const path = require("node:path");
 const assert = require("node:assert/strict");
 const crypto = require("node:crypto");
 const fixturesPath = path.join(__dirname, "fixtures.json");
-const bytes = fs.readFileSync(fixturesPath);
+// Normalize checkout line endings before hashing shared fixture source.
+const bytes = Buffer.from(fs.readFileSync(fixturesPath, "utf8").replace(/\r\n/g, "\n"));
 const fixtures = JSON.parse(bytes);
 const digest = crypto.createHash("sha256").update(bytes).digest("hex");
 if (!process.argv.includes("--generate")) {

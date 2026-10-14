@@ -22,7 +22,7 @@ fn name_initial(given : String, marker : String) -> String {
 }
 
 ///|
-fn format_name(name : CslName, node : NameNode, index : Int) -> String {
+fn format_name(name : CslName, node : NameNode, index : Int32) -> String {
   if !name.literal.is_empty() {
     return name.literal
   }

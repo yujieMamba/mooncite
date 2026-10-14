@@ -2,7 +2,7 @@
 fn apply_affix(
   affix : Affix,
   text : String,
-  format? : String = "text",
+  format~ : String = "text",
 ) -> String {
   if text.is_empty() {
     return ""
@@ -391,7 +391,7 @@ pub fn Processor::from_style(style_xml : String) -> Result[Processor, CslError] 
 pub fn Processor::render_bibliography(
   self : Processor,
   items : Array[Item],
-  format? : String = "text",
+  format~ : String = "text",
 ) -> Result[String, CslError] {
   let style = context_style(self.style, false)
   let ordered = match prepare_items(items, style) {

@@ -20,7 +20,7 @@ pub extend XmlNode with @debug.Debug::{to_repr}
 ///|
 priv struct XmlParser {
   chars : Array[Char]
-  mut i : Int
+  mut i : Int32
 }
 
 ///|
@@ -34,7 +34,7 @@ fn XmlParser::peek(self : XmlParser) -> Char? {
 }
 
 ///|
-fn XmlParser::peek_at(self : XmlParser, k : Int) -> Char? {
+fn XmlParser::peek_at(self : XmlParser, k : Int32) -> Char? {
   self.chars.get(self.i + k)
 }
 
@@ -69,7 +69,7 @@ fn XmlParser::starts_with(self : XmlParser, s : String) -> Bool {
 }
 
 ///|
-fn XmlParser::take(self : XmlParser, n : Int) -> Unit {
+fn XmlParser::take(self : XmlParser, n : Int32) -> Unit {
   self.i = self.i + n
 }
 

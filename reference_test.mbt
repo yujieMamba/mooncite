@@ -1,5 +1,5 @@
 // Generated from tools/reference/fixtures.json; run npm run generate, then moon fmt.
-// Fixtures SHA-256: 428b5eb43020486c623b8a87b51729478ddb8337665d31caec41375f8a028986
+// Fixtures SHA-256: 663dcca87b0c3980d0fcaaa26309d8cdb1a30d1f8700a8c5e056c508e7f8a596
 
 ///|
 test "reference short-conjunction" {

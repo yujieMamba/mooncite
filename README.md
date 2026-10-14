@@ -15,7 +15,7 @@ MoonCite 是 MoonBit 文献引用与参考文献排版库：输入 CSL XML 样�
 
 ## 从 GitHub 获取并运行
 
-要求 `moonc >= 0.10.14`。本次修复版本为 **0.1.1**，尚未同步 MoonCakes；以下命令直接验证 GitHub 源码，不依赖 MoonCakes 上的旧版本。
+当前源码使用 `moonc >= 0.10.15`（满足比赛要求的不低于 0.10.14）；建议使用官方工具链 2026-10-12 版或更新版本。本次修复版本为 **0.1.1**，尚未同步 MoonCakes；以下命令直接验证 GitHub 源码，不依赖 MoonCakes 上的旧版本。
 
 ```bash
 git clone https://github.com/yujieMamba/mooncite.git

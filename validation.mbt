@@ -29,8 +29,8 @@ pub fn validate_style(style_xml : String) -> Array[String] {
 }
 
 ///|
-pub fn style_complexity(style_xml : String) -> Map[String, Int] {
-  let out : Map[String, Int] = Map([])
+pub fn style_complexity(style_xml : String) -> Map[String, Int32] {
+  let out : Map[String, Int32] = Map([])
   match parse_style(style_xml) {
     Err(_) => ()
     Ok(style) => {

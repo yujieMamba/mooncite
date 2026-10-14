@@ -44,7 +44,7 @@ pub fn page_range_end(value : String) -> String {
 }
 
 ///|
-pub fn collapse_numeric_ranges(values : Array[Int]) -> String {
+pub fn collapse_numeric_ranges(values : Array[Int32]) -> String {
   if values.length() == 0 {
     return ""
   }
@@ -71,7 +71,7 @@ pub fn collapse_numeric_ranges(values : Array[Int]) -> String {
 }
 
 ///|
-pub fn render_int_range(start : Int, end : Int) -> String {
+pub fn render_int_range(start : Int32, end : Int32) -> String {
   if start == end {
     start.to_string()
   } else if end == start + 1 {
@@ -82,15 +82,15 @@ pub fn render_int_range(start : Int, end : Int) -> String {
 }
 
 ///|
-pub fn format_page_variable(item : Item, variable? : String = "page") -> String {
+pub fn format_page_variable(item : Item, variable~ : String = "page") -> String {
   normalize_page_range(item.string(variable))
 }
 
 ///|
 pub fn number_label(
   variable : String,
-  count : Int,
-  short? : Bool = false,
+  count : Int32,
+  short~ : Bool = false,
 ) -> String {
   let form = if short { "short" } else { "long" }
   let word = term_for(variable, form)
@@ -116,7 +116,7 @@ pub fn date_is_range(date : CslDate) -> Bool {
 }
 
 ///|
-pub fn date_range_text(date : CslDate, delimiter? : String = "–") -> String {
+pub fn date_range_text(date : CslDate, delimiter~ : String = "–") -> String {
   if !date_is_range(date) {
     return date.year.to_string()
   }
@@ -341,7 +341,7 @@ pub fn format_volume_issue(item : Item) -> String {
 }
 
 ///|
-pub fn format_identifier(item : Item, prefer_doi? : Bool = true) -> String {
+pub fn format_identifier(item : Item, prefer_doi~ : Bool = true) -> String {
   if prefer_doi && !item.doi.is_empty() {
     "https://doi.org/" + item.doi
   } else {
@@ -414,7 +414,7 @@ pub fn invert_name(name : CslName) -> String {
 }
 
 ///|
-pub fn initials_for_name(name : CslName, marker? : String = ". ") -> String {
+pub fn initials_for_name(name : CslName, marker~ : String = ". ") -> String {
   if !name.literal.is_empty() {
     return name.literal
   }
@@ -435,7 +435,7 @@ pub fn bibliography_key(item : Item) -> String {
 }
 
 ///|
-pub fn compare_items_for_bibliography(a : Item, b : Item) -> Int {
+pub fn compare_items_for_bibliography(a : Item, b : Item) -> Int32 {
   cmp_str(bibliography_key(a), bibliography_key(b))
 }
 
@@ -485,8 +485,8 @@ pub fn validate_items(items : Array[Item]) -> Map[String, Array[String]] {
 }
 
 ///|
-pub fn bibliography_statistics(items : Array[Item]) -> Map[String, Int] {
-  let out : Map[String, Int] = Map([])
+pub fn bibliography_statistics(items : Array[Item]) -> Map[String, Int32] {
+  let out : Map[String, Int32] = Map([])
   out["items"] = items.length()
   out["with-author"] = 0
   out["with-issued"] = 0

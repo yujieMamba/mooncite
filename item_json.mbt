@@ -16,7 +16,7 @@ fn json_bool(value : Json) -> Bool? {
 }
 
 ///|
-fn json_int(value : Json) -> Int? {
+fn json_int(value : Json) -> Int32? {
   match value {
     Number(n, ..) => Some(n.to_int())
     _ => None
@@ -323,7 +323,7 @@ pub fn parse_cites_json(json_text : String) -> Result[Array[Cite], CslError] {
 pub fn Processor::render_bibliography_json(
   self : Processor,
   items_json : String,
-  format? : String = "text",
+  format~ : String = "text",
 ) -> Result[String, CslError] {
   let items = match parse_items_json(items_json) {
     Ok(x) => x
@@ -337,7 +337,7 @@ pub fn Processor::render_citation_json(
   self : Processor,
   items_json : String,
   cites_json : String,
-  format? : String = "text",
+  format~ : String = "text",
 ) -> Result[String, CslError] {
   let items = match parse_items_json(items_json) {
     Ok(x) => x

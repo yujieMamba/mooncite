@@ -55,7 +55,7 @@ fn compare_items(
   b : Item,
   keys : Array[SortKey],
   style : Style,
-) -> Int {
+) -> Int32 {
   for key in keys {
     let left = sort_value(a, key, style).to_lower()
     let right = sort_value(b, key, style).to_lower()

@@ -15,7 +15,7 @@ pub extend CslName with Eq::{not_equal, equal}
 pub extend CslName with @debug.Debug::{to_repr}
 
 ///|
-pub fn CslName::new(family : String, given? : String = "") -> CslName {
+pub fn CslName::new(family : String, given~ : String = "") -> CslName {
   {
     literal: "",
     family,
@@ -28,12 +28,12 @@ pub fn CslName::new(family : String, given? : String = "") -> CslName {
 
 ///|
 pub(all) struct CslDate {
-  mut year : Int
-  mut month : Int
-  mut day : Int
-  mut end_year : Int
-  mut end_month : Int
-  mut end_day : Int
+  mut year : Int32
+  mut month : Int32
+  mut day : Int32
+  mut end_year : Int32
+  mut end_month : Int32
+  mut end_day : Int32
   mut circa : Bool
   mut literal : String
 } derive(Debug, Eq)
@@ -45,7 +45,11 @@ pub extend CslDate with Eq::{not_equal, equal}
 pub extend CslDate with @debug.Debug::{to_repr}
 
 ///|
-pub fn CslDate::new(year : Int, month? : Int = 0, day? : Int = 0) -> CslDate {
+pub fn CslDate::new(
+  year : Int32,
+  month~ : Int32 = 0,
+  day~ : Int32 = 0,
+) -> CslDate {
   {
     year,
     month,
@@ -76,7 +80,7 @@ pub(all) struct Item {
   names : Map[String, Array[CslName]]
   dates : Map[String, CslDate]
   strings : Map[String, String]
-  numbers : Map[String, Int]
+  numbers : Map[String, Int32]
   booleans : Map[String, Bool]
 } derive(Debug)
 
@@ -143,7 +147,7 @@ pub fn Item::set_date(self : Item, variable : String, date : CslDate) -> Item {
 }
 
 ///|
-pub fn Item::set_number(self : Item, variable : String, value : Int) -> Item {
+pub fn Item::set_number(self : Item, variable : String, value : Int32) -> Item {
   self.numbers[variable] = value
   self
 }
@@ -191,7 +195,7 @@ pub fn Item::has(self : Item, variable : String) -> Bool {
 }
 
 ///|
-pub fn Item::number(self : Item, variable : String) -> Int? {
+pub fn Item::number(self : Item, variable : String) -> Int32? {
   self.numbers.get(variable)
 }
 

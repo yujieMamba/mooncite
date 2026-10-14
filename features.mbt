@@ -119,32 +119,32 @@ pub fn item_summary(item : Item) -> String {
 ///|
 pub fn item_to_plain_json(item : Item) -> String {
   let fields : Map[String, Json] = Map([])
-  fields["id"] = item.id.to_json()
+  fields["id"] = Json(item.id)
   for variable in ["title", "container-title", "URL", "DOI"] {
     let value = item.string(variable)
     if !value.is_empty() {
-      fields[variable] = value.to_json()
+      fields[variable] = Json(value)
     }
   }
-  fields.to_json().stringify()
+  Json(fields).stringify()
 }
 
 ///|
 pub fn cite_to_plain_json(cite : Cite) -> String {
   let fields : Map[String, Json] = Map([])
-  fields["id"] = cite.id.to_json()
+  fields["id"] = Json(cite.id)
   if !cite.locator.is_empty() {
-    fields["locator"] = cite.locator.to_json()
+    fields["locator"] = Json(cite.locator)
   }
   if !cite.prefix.is_empty() {
-    fields["prefix"] = cite.prefix.to_json()
+    fields["prefix"] = Json(cite.prefix)
   }
   if !cite.suffix.is_empty() {
-    fields["suffix"] = cite.suffix.to_json()
+    fields["suffix"] = Json(cite.suffix)
   }
-  fields["label"] = cite.label.to_json()
-  fields["suppress-author"] = cite.suppress_author.to_json()
-  fields.to_json().stringify()
+  fields["label"] = Json(cite.label)
+  fields["suppress-author"] = Json(cite.suppress_author)
+  Json(fields).stringify()
 }
 
 ///|

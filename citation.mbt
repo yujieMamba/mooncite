@@ -3,7 +3,7 @@ pub fn Processor::render_citation(
   self : Processor,
   items : Array[Item],
   cites : Array[Cite],
-  format? : String = "text",
+  format~ : String = "text",
 ) -> Result[String, CslError] {
   let style = context_style(self.style, true)
   let prepared = match prepare_items(items, context_style(self.style, false)) {
@@ -101,7 +101,7 @@ pub fn Processor::render_citation(
 priv struct CitationEntry {
   item : Item
   cite : Cite
-  order : Int
+  order : Int32
 }
 
 ///|
@@ -118,7 +118,7 @@ fn numeric_layout(nodes : Array[Node], style : Style) -> Bool {
 }
 
 ///|
-fn numeric_node_count(nodes : Array[Node], style : Style) -> Int? {
+fn numeric_node_count(nodes : Array[Node], style : Style) -> Int32? {
   let mut count = 0
   for node in nodes {
     let n = match node {
