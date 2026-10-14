@@ -7,3 +7,6 @@ target
 # local diagnostic outputs
 check*.txt
 README.mbt.md
+
+# Optional external differential-test dependencies
+node_modules/

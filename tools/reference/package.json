@@ -1,0 +1,12 @@
+{
+  "name": "mooncite-reference-tests",
+  "version": "0.1.1",
+  "private": true,
+  "scripts": {
+    "test": "node check-reference.cjs",
+    "generate": "node check-reference.cjs --generate"
+  },
+  "devDependencies": {
+    "citeproc": "2.4.63"
+  }
+}
