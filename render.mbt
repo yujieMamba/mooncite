@@ -1,20 +1,27 @@
 ///|
-fn apply_affix(affix : Affix, text : String) -> String {
+fn apply_affix(
+  affix : Affix,
+  text : String,
+  format? : String = "text",
+) -> String {
   if text.is_empty() {
     return ""
   }
   let mut value = text
-  value = apply_text_case(value, affix.text_case)
-  if !affix.font_style.is_empty() && affix.font_style == "italic" {
+  value = apply_output_case(value, affix.text_case, format)
+  if format == "html" && affix.font_style == "italic" {
     value = "<i>" + value + "</i>"
   }
-  if !affix.font_weight.is_empty() && affix.font_weight == "bold" {
+  if format == "html" && affix.font_weight == "bold" {
     value = "<b>" + value + "</b>"
   }
-  if !affix.vertical_align.is_empty() && affix.vertical_align == "sup" {
+  if format == "html" &&
+    (affix.vertical_align == "sup" || affix.vertical_align == "superscript") {
     value = "<sup>" + value + "</sup>"
   }
-  affix.prefix + value + affix.suffix
+  output_escape(affix.prefix, format) +
+  value +
+  output_escape(affix.suffix, format)
 }
 
 ///|
@@ -24,9 +31,17 @@ fn format_number(value : String, form : String) -> String {
       if form == "ordinal" {
         ordinal_en(n)
       } else if form == "long-ordinal" {
-        ordinal_en(n)
+        let words = [
+          "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth",
+          "ninth", "tenth",
+        ]
+        if n >= 1 && n <= 10 {
+          words[n - 1]
+        } else {
+          ordinal_en(n)
+        }
       } else if form == "roman" {
-        roman_upper(n)
+        roman_upper(n).to_lower()
       } else {
         n.to_string()
       }
@@ -83,70 +98,12 @@ fn part_to_affix(part : DatePart) -> Affix {
 }
 
 ///|
-fn name_initial(given : String, marker : String) -> String {
-  let words = split_ws(given)
-  let out = []
-  for word in words {
-    if !word.is_empty() {
-      out.push(
-        match word.to_array().get(0) {
-          Some(c) => c.to_string() + marker
-          None => ""
-        },
-      )
-    }
-  }
-  join_nonempty(out, " ")
-}
-
-///|
-fn format_name(name : CslName, node : NameNode) -> String {
-  let mut given = name.given
-  if node.initialize {
-    given = name_initial(given, node.initialize_with)
-  }
-  if node.form == "short" {
-    return name.family
-  }
-  let mut family = name.family
-  if !name.non_dropping_particle.is_empty() {
-    family = name.non_dropping_particle + " " + family
-  }
-  if !name.suffix.is_empty() {
-    family = family + ", " + name.suffix
-  }
-  if node.name_as_sort_order == "all" || node.name_as_sort_order == "first" {
-    if !given.is_empty() {
-      family + ", " + given
-    } else {
-      family
-    }
+fn output_escape(value : String, format : String) -> String {
+  if format == "html" {
+    html_escape(value)
   } else {
-    join_nonempty([given, family], " ")
+    value
   }
-}
-
-///|
-fn format_names(names : Array[CslName], node : NameNode) -> String {
-  if names.length() == 0 {
-    return ""
-  }
-  let mut limit = names.length()
-  if node.et_al_min > 0 && names.length() >= node.et_al_min {
-    limit = node.et_al_use_first
-  }
-  let shown = []
-  for i = 0; i < limit && i < names.length(); i = i + 1 {
-    match names.get(i) {
-      Some(n) => shown.push(format_name(n, node))
-      None => ()
-    }
-  }
-  let mut result = join_nonempty(shown, node.delimiter)
-  if limit < names.length() {
-    result = result + node.delimiter + "et al."
-  }
-  result
 }
 
 ///|
@@ -170,10 +127,22 @@ fn term_for(variable : String, form : String) -> String {
 ///|
 fn item_value(item : Item, variable : String) -> String {
   match variable {
-    "citation-number" => item.strings.get("citation-number").unwrap_or("")
+    "citation-number" =>
+      item.strings
+      .get("citation-number")
+      .unwrap_or_else(fn() {
+        item.numbers
+        .get("citation-number")
+        .map(fn(n) { n.to_string() })
+        .unwrap_or("")
+      })
     "year-suffix" => item.strings.get("year-suffix").unwrap_or("")
     "author" | "editor" | "translator" => first_family(item, variable)
-    _ => item.string(variable)
+    _ =>
+      match item.numbers.get(variable) {
+        Some(n) => n.to_string()
+        None => item.string(variable)
+      }
   }
 }
 
@@ -185,48 +154,119 @@ fn node_value(
   format : String,
 ) -> String {
   match node {
+    Label(affix, spec) => {
+      let value = item_value(item, spec.variable)
+      if value.is_empty() {
+        return ""
+      }
+      let variable = if spec.variable == "locator" {
+        item.strings.get("locator-label").unwrap_or("page")
+      } else {
+        spec.variable
+      }
+      let plural = spec.plural == "always" ||
+        (
+          spec.plural != "never" &&
+          (value.contains("-") || value.contains("–") || value.contains(","))
+        )
+      let term = term_for(variable, spec.form)
+      let term = if plural && (spec.form.is_empty() || spec.form == "long") {
+        term + "s"
+      } else if plural && variable == "page" && spec.form == "short" {
+        "pp."
+      } else {
+        term
+      }
+      apply_affix(affix, output_escape(term, format), format~)
+    }
     Text(affix, spec) => {
-      let value = if !spec.value.is_empty() {
-        spec.value
-      } else if !spec.macro_name.is_empty() {
+      let value = if !spec.macro_name.is_empty() {
         match style.macros.get(spec.macro_name) {
           Some(xs) => render_nodes(xs, item, style, format)
           None => ""
         }
-      } else if !spec.term.is_empty() {
-        term_for(spec.term, spec.form)
       } else {
-        item_value(item, spec.variable)
+        output_escape(
+          if !spec.value.is_empty() {
+            spec.value
+          } else if !spec.term.is_empty() {
+            if spec.term == "and" || spec.term == "et-al" {
+              style.locale.term(spec.term)
+            } else {
+              term_for(spec.term, spec.form)
+            }
+          } else {
+            item_value(item, spec.variable)
+          },
+          format,
+        )
       }
-      apply_affix(
-        affix,
-        if format == "html" {
-          html_escape(value)
-        } else {
-          value
-        },
-      )
+      apply_affix(affix, value, format~)
     }
-    Names(affix, spec) =>
-      apply_affix(affix, format_names(item.name(spec.variable), spec))
+    Names(affix, spec) => {
+      let spec = resolve_name_node(spec, style)
+      let lists = []
+      for variable in spec.variable.split(" ") {
+        let variable = variable.to_owned()
+        let names = item.name(variable)
+        if !names.is_empty() {
+          lists.push(
+            format_names(
+              names,
+              { ..spec, label_variable: variable, },
+              style,
+              format,
+            ),
+          )
+        }
+      }
+      let mut value = join_nonempty(
+        lists,
+        output_escape(spec.options.get("names-delimiter").unwrap_or(""), format),
+      )
+      if value.is_empty() {
+        for substitute in spec.substitute {
+          value = node_value(substitute, item, style, format)
+          if !value.is_empty() {
+            break
+          }
+        }
+      }
+      apply_affix(affix, value, format~)
+    }
     Number(affix, spec) =>
       apply_affix(
         affix,
-        format_number(item_value(item, spec.variable), spec.form),
+        output_escape(
+          format_number(item_value(item, spec.variable), spec.form),
+          format,
+        ),
+        format~,
       )
     Date(affix, spec) =>
       match item.date(spec.variable) {
         Some(d) =>
-          apply_affix(affix, format_date(d, spec.parts, spec.delimiter))
+          apply_affix(
+            affix,
+            output_escape(format_date(d, spec.parts, spec.delimiter), format),
+            format~,
+          )
         None => ""
       }
     Group(affix, children) =>
       apply_affix(
         affix,
-        join_rendered(children, item, style, format, affix.delimiter),
+        join_rendered(
+          children,
+          item,
+          style,
+          format,
+          output_escape(affix.delimiter, format),
+        ),
+        format~,
       )
     Choose(affix, branches) =>
-      apply_affix(affix, render_choose(branches, item, style, format))
+      apply_affix(affix, render_choose(branches, item, style, format), format~)
   }
 }
 
@@ -245,7 +285,7 @@ fn condition_ok(condition : Condition, item : Item) -> Bool {
         None => false
       }
     IsPlural(v) => item.name(v).length() > 1
-    Position(_) => true
+    Position(_) => false
   }
 }
 
@@ -317,7 +357,7 @@ fn join_rendered(
       out.push(value)
     }
   }
-  join_nonempty(out, delimiter).replace(old=". .", new=".")
+  join_nonempty(out, delimiter)
 }
 
 ///|
@@ -329,41 +369,9 @@ fn render_layout(
 ) -> String {
   apply_affix(
     layout.affix,
-    join_rendered(layout.children, item, style, format, layout.affix.delimiter),
+    render_nodes(layout.children, item, style, format),
+    format~,
   )
-}
-
-///|
-fn sort_value(item : Item, key : SortKey, style : Style) -> String {
-  if !key.variable.is_empty() {
-    item_value(item, key.variable)
-  } else if !key.macro_name.is_empty() {
-    match style.macros.get(key.macro_name) {
-      Some(xs) => render_nodes(xs, item, style, "text")
-      None => ""
-    }
-  } else {
-    item.id
-  }
-}
-
-///|
-fn sorted_items(
-  items : Array[Item],
-  keys : Array[SortKey],
-  style : Style,
-) -> Array[Item] {
-  let out = items.copy()
-  out.sort_by(fn(a, b) {
-    for key in keys {
-      let c = cmp_str(sort_value(a, key, style), sort_value(b, key, style))
-      if c != 0 {
-        return if key.sort_order == "descending" { -c } else { c }
-      }
-    }
-    cmp_str(a.id, b.id)
-  })
-  out
 }
 
 ///|
@@ -373,7 +381,6 @@ pub(all) struct Processor {
 
 ///|
 pub fn Processor::from_style(style_xml : String) -> Result[Processor, CslError] {
-  let _ = quality_helpers(style_xml)
   match parse_style(style_xml) {
     Ok(style) => Ok({ style, })
     Err(e) => Err(e)
@@ -386,17 +393,17 @@ pub fn Processor::render_bibliography(
   items : Array[Item],
   format? : String = "text",
 ) -> Result[String, CslError] {
-  match self.style.bibliography {
+  let style = context_style(self.style, false)
+  let ordered = match prepare_items(items, style) {
+    Ok(xs) => xs
+    Err(e) => return Err(e)
+  }
+  match style.bibliography {
     None => Err(MissingStyle)
     Some(layout) => {
-      let ordered = sorted_items(
-        items,
-        self.style.bibliography_sort,
-        self.style,
-      )
       let out = []
       for item in ordered {
-        out.push(render_layout(layout, item, self.style, format))
+        out.push(render_layout(layout, item, style, format))
       }
       Ok(join_nonempty(out, "\n"))
     }
@@ -404,26 +411,52 @@ pub fn Processor::render_bibliography(
 }
 
 ///|
-pub fn Processor::render_citation(
-  self : Processor,
-  items : Array[Item],
-  cites : Array[Cite],
-  format? : String = "text",
-) -> Result[String, CslError] {
-  match self.style.citation {
-    None => Err(MissingStyle)
-    Some(layout) => {
-      let out = []
-      for cite in cites {
-        for item in items {
-          if item.id == cite.id {
-            out.push(render_layout(layout, item, self.style, format))
-          }
+fn apply_output_case(text : String, mode : String, format : String) -> String {
+  if format != "html" || mode.is_empty() {
+    return apply_text_case(text, mode)
+  }
+  let chars = text.to_array()
+  let out = StringBuilder()
+  let mut plain = StringBuilder()
+  let mut i = 0
+  let mut first = true
+  while i < chars.length() {
+    if chars[i] == '<' || chars[i] == '&' {
+      let segment = plain.to_string()
+      if !segment.is_empty() {
+        out.write_string(
+          if mode == "capitalize-first" && !first {
+            segment
+          } else {
+            apply_text_case(segment, mode)
+          },
+        )
+        first = false
+        plain = StringBuilder()
+      }
+      let closing = if chars[i] == '<' { '>' } else { ';' }
+      while i < chars.length() {
+        let c = chars[i]
+        out.write_char(c)
+        i = i + 1
+        if c == closing {
+          break
         }
       }
-      Ok(join_nonempty(out, self.style.citation_delimiter))
+    } else {
+      plain.write_char(chars[i])
+      i = i + 1
     }
   }
+  let segment = plain.to_string()
+  out.write_string(
+    if mode == "capitalize-first" && !first {
+      segment
+    } else {
+      apply_text_case(segment, mode)
+    },
+  )
+  out.to_string()
 }
 
 ///|
@@ -432,15 +465,6 @@ pub fn Processor::render_bibliography_html(
   items : Array[Item],
 ) -> Result[String, CslError] {
   self.render_bibliography(items, format="html")
-}
-
-///|
-pub fn Processor::render_citation_html(
-  self : Processor,
-  items : Array[Item],
-  cites : Array[Cite],
-) -> Result[String, CslError] {
-  self.render_citation(items, cites, format="html")
 }
 
 ///|

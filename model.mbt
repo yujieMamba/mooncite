@@ -1,5 +1,6 @@
 ///|
 pub(all) struct CslName {
+  mut literal : String
   mut family : String
   mut given : String
   mut suffix : String
@@ -16,6 +17,7 @@ pub extend CslName with @debug.Debug::{to_repr}
 ///|
 pub fn CslName::new(family : String, given? : String = "") -> CslName {
   {
+    literal: "",
     family,
     given,
     suffix: "",
@@ -222,14 +224,6 @@ pub fn Cite::new(id : String) -> Cite {
 }
 
 ///|
-fn item_var(item : Item, variable : String) -> String {
-  if variable == "author" || variable == "editor" || variable == "translator" {
-    return ""
-  }
-  item.string(variable)
-}
-
-///|
 fn first_family(item : Item, variable : String) -> String {
   match item.names.get(variable) {
     Some(xs) =>
@@ -238,29 +232,5 @@ fn first_family(item : Item, variable : String) -> String {
         None => ""
       }
     None => ""
-  }
-}
-
-///|
-fn item_sort_id(item : Item) -> String {
-  item.id
-}
-
-///|
-fn quality_helpers(seed : String) -> String {
-  let a = ascii_upper(seed)
-  let b = bool_word("true")
-  let c = first_int("42").unwrap_or(0)
-  let d = cmp_int(c, 7)
-  let e = strip_periods("A.B.")
-  let f = year_letter(0)
-  if b {
-    a +
-    e +
-    f +
-    item_sort_id(Item::new(d.to_string())) +
-    item_var(Item::new("x"), "title")
-  } else {
-    a
   }
 }

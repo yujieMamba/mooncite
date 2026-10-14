@@ -263,6 +263,7 @@ pub fn CslError::not_equal(Self, Self) -> Bool
 pub fn CslError::to_repr(Self) -> @debug.Repr
 
 pub(all) struct CslName {
+  mut literal : String
   mut family : String
   mut given : String
   mut suffix : String
@@ -322,6 +323,12 @@ pub fn Item::set_string(Self, String, String) -> Self
 pub fn Item::string(Self, String) -> String
 pub fn Item::to_repr(Self) -> @debug.Repr
 
+pub struct LabelNode {
+  variable : String
+  form : String
+  plural : String
+}
+
 pub struct Layout {
   affix : Affix
   children : Array[Node]
@@ -349,9 +356,14 @@ pub struct NameNode {
   et_al_min : Int
   et_al_use_first : Int
   label_variable : String
+  options : Map[String, String]
+  name_affix : Affix
+  label : XmlElem?
+  substitute : Array[Node]
 }
 
 pub enum Node {
+  Label(Affix, LabelNode)
   Text(Affix, TextNode)
   Names(Affix, NameNode)
   Number(Affix, NumberNode)
@@ -400,6 +412,11 @@ pub struct Style {
   citation_disambiguate : Bool
   citation_collapse : String
   citation_delimiter : String
+  after_collapse_delimiter : String?
+  name_options : Map[String, String]
+  citation_name_options : Map[String, String]
+  bibliography_name_options : Map[String, String]
+  locale : Locale
 }
 
 pub struct TextNode {

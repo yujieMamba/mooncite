@@ -53,6 +53,10 @@ fn parse_name_json(value : Json) -> CslName? {
         None => ""
       }
       let n = CslName::new(family, given~)
+      n.literal = match obj.get("literal") {
+        Some(value) => json_string(value).unwrap_or("")
+        None => ""
+      }
       n.suffix = match obj.get("suffix") {
         Some(x) => json_string(x).unwrap_or("")
         None => ""
@@ -302,6 +306,10 @@ pub fn parse_cites_json(json_text : String) -> Result[Array[Cite], CslError] {
         match obj.get("suffix") {
           Some(v) => cite.suffix = json_string(v).unwrap_or("")
           None => ()
+        }
+        cite.suppress_author = match obj.get("suppress-author") {
+          Some(value) => json_bool(value).unwrap_or(false)
+          None => false
         }
         out.push(cite)
       }

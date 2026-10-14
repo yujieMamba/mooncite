@@ -55,7 +55,10 @@ pub fn collapse_numeric_ranges(values : Array[Int]) -> String {
   let mut last = start
   for i = 1; i < sorted.length(); i = i + 1 {
     let current = sorted[i]
-    if current == last + 1 {
+    if current == last {
+      continue
+    }
+    if current > last && current - 1 == last {
       last = current
     } else {
       out.push(render_int_range(start, last))
@@ -124,6 +127,9 @@ pub fn date_range_text(date : CslDate, delimiter? : String = "–") -> String {
 
 ///|
 pub fn name_family_key(name : CslName) -> String {
+  if !name.literal.is_empty() {
+    return name.literal.to_lower()
+  }
   (name.non_dropping_particle + " " + name.family).trim().to_owned().to_lower()
 }
 
@@ -196,7 +202,7 @@ pub fn assign_year_suffixes(items : Array[Item]) -> Unit {
 
 ///|
 pub fn with_citation_numbers(items : Array[Item]) -> Array[Item] {
-  let out = items.copy()
+  let out = items.map(copy_render_item)
   for i = 0; i < out.length(); i = i + 1 {
     out[i].strings["citation-number"] = (i + 1).to_string()
   }
@@ -395,6 +401,9 @@ pub fn title_case_words(value : String) -> String {
 
 ///|
 pub fn invert_name(name : CslName) -> String {
+  if !name.literal.is_empty() {
+    return name.literal
+  }
   let family = join_nonempty([name.non_dropping_particle, name.family], " ")
   let given = join_nonempty([name.dropping_particle, name.given], " ")
   if given.is_empty() {
@@ -406,6 +415,9 @@ pub fn invert_name(name : CslName) -> String {
 
 ///|
 pub fn initials_for_name(name : CslName, marker? : String = ". ") -> String {
+  if !name.literal.is_empty() {
+    return name.literal
+  }
   let initials = name_initial(name.given, marker)
   join_nonempty(
     [name.dropping_particle, initials, name.family, name.suffix],

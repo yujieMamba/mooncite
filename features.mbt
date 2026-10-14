@@ -118,37 +118,33 @@ pub fn item_summary(item : Item) -> String {
 
 ///|
 pub fn item_to_plain_json(item : Item) -> String {
-  let fields = []
-  fields.push("\"id\":\"" + item.id + "\"")
-  if !item.title.is_empty() {
-    fields.push("\"title\":\"" + item.title + "\"")
+  let fields : Map[String, Json] = Map([])
+  fields["id"] = item.id.to_json()
+  for variable in ["title", "container-title", "URL", "DOI"] {
+    let value = item.string(variable)
+    if !value.is_empty() {
+      fields[variable] = value.to_json()
+    }
   }
-  if !item.container_title.is_empty() {
-    fields.push("\"container-title\":\"" + item.container_title + "\"")
-  }
-  if !item.url.is_empty() {
-    fields.push("\"URL\":\"" + item.url + "\"")
-  }
-  if !item.doi.is_empty() {
-    fields.push("\"DOI\":\"" + item.doi + "\"")
-  }
-  "{" + join_nonempty(fields, ",") + "}"
+  fields.to_json().stringify()
 }
 
 ///|
 pub fn cite_to_plain_json(cite : Cite) -> String {
-  let fields = ["\"id\":\"" + cite.id + "\""]
-  let out = fields
+  let fields : Map[String, Json] = Map([])
+  fields["id"] = cite.id.to_json()
   if !cite.locator.is_empty() {
-    out.push("\"locator\":\"" + cite.locator + "\"")
+    fields["locator"] = cite.locator.to_json()
   }
   if !cite.prefix.is_empty() {
-    out.push("\"prefix\":\"" + cite.prefix + "\"")
+    fields["prefix"] = cite.prefix.to_json()
   }
   if !cite.suffix.is_empty() {
-    out.push("\"suffix\":\"" + cite.suffix + "\"")
+    fields["suffix"] = cite.suffix.to_json()
   }
-  "{" + join_nonempty(out, ",") + "}"
+  fields["label"] = cite.label.to_json()
+  fields["suppress-author"] = cite.suppress_author.to_json()
+  fields.to_json().stringify()
 }
 
 ///|
@@ -179,7 +175,7 @@ pub fn processor_capabilities() -> Array[String] {
 
 ///|
 pub fn processor_version() -> String {
-  "0.1.0"
+  "0.1.1"
 }
 
 ///|

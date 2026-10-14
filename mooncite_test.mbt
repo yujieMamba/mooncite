@@ -3,7 +3,7 @@ const TEST_STYLE =
   #|<style version="1.0" title="Test">
   #|<info><title>Test</title><id>http://example/test</id></info>
   #|<citation><layout prefix="(" suffix=")"><text variable="title"/></layout></citation>
-  #|<bibliography><layout delimiter=". "><names variable="author" suffix=". "/><date variable="issued" prefix="(" suffix=")"><date-part name="year"/></date><text variable="title"/></layout></bibliography>
+  #|<bibliography><layout><group delimiter=". "><names variable="author"/><date variable="issued" prefix="(" suffix=")"><date-part name="year"/></date><text variable="title"/></group></layout></bibliography>
   #|</style>
 
 ///|

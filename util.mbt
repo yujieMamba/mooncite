@@ -116,12 +116,22 @@ fn decode_entity(body : String) -> String {
     "'"
   } else if body.has_prefix("#x") || body.has_prefix("#X") {
     match parse_hex(body[2:].to_owned()) {
-      Some(n) => char_from_code(n)
+      Some(n) =>
+        if valid_xml_code(n) {
+          char_from_code(n)
+        } else {
+          "&" + body + ";"
+        }
       None => "&" + body + ";"
     }
   } else if body.has_prefix("#") {
     match parse_int(body[1:].to_owned()) {
-      Some(n) => char_from_code(n)
+      Some(n) =>
+        if valid_xml_code(n) {
+          char_from_code(n)
+        } else {
+          "&" + body + ";"
+        }
       None => "&" + body + ";"
     }
   } else {
@@ -154,8 +164,18 @@ fn parse_hex(text : String) -> Int? {
 }
 
 ///|
+fn valid_xml_code(code : Int) -> Bool {
+  code == 9 ||
+  code == 10 ||
+  code == 13 ||
+  (code >= 32 && code <= 55295) ||
+  (code >= 57344 && code <= 65533) ||
+  (code >= 65536 && code <= 1114111)
+}
+
+///|
 fn char_from_code(code : Int) -> String {
-  if code <= 0 {
+  if !valid_xml_code(code) {
     ""
   } else {
     let buf = StringBuilder()
@@ -273,25 +293,6 @@ fn is_csl_numeric(text : String) -> Bool {
     }
   }
   saw_digit
-}
-
-///|
-fn first_int(text : String) -> Int? {
-  let buf = StringBuilder()
-  let mut seen = false
-  for c in text {
-    if is_digit(c) {
-      buf.write_char(c)
-      seen = true
-    } else if seen {
-      break
-    }
-  }
-  if seen {
-    parse_int(buf.to_string())
-  } else {
-    None
-  }
 }
 
 ///|

@@ -41,3 +41,35 @@ test "xml prefixed names collapse" {
   assert_eq(root.kids()[0].name, "text")
   assert_eq(root.kids()[0].attr("value"), "Hi")
 }
+
+///|
+test "xml rejects truncated mismatched and multiple roots" {
+  for
+    input in [
+      "<style>", "<a></a", "<a></>", "<a></b>", "<x:a></y:a>", "<a/><b/>", "<a/>junk",
+      "<a><!--", "<a/><!--", "<a/><?", "<a flag/>", "<a x=\"1\" x=\"2\"/>", "<!DOCTYPE a><a/>",
+      "<a><![CDATA[x</a>",
+    ] {
+    assert_true(parse_xml(input) is Err(_), msg=input)
+  }
+}
+
+///|
+test "xml preserves text whitespace and CDATA" {
+  assert_eq(
+    parse_xml(
+      "<?xml version=\"1.0\"?><a> hello <![CDATA[<world>]]> </a><!--ok-->",
+    )
+    .unwrap()
+    .text(),
+    " hello <world> ",
+  )
+}
+
+///|
+test "invalid numeric XML entities cannot trap" {
+  let root = parse_xml(
+    "<a>&#1114112; &#55296; &#0; &#x110000; &#xD800; &#65;</a>",
+  ).unwrap()
+  assert_eq(root.text(), "&#1114112; &#55296; &#0; &#x110000; &#xD800; A")
+}

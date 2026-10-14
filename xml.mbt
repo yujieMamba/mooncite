@@ -127,15 +127,16 @@ fn XmlParser::read_entity(self : XmlParser) -> String {
 }
 
 ///|
-fn XmlParser::skip_until(self : XmlParser, end : String) -> Unit {
+fn XmlParser::skip_until(self : XmlParser, end : String) -> Bool {
   let n = end.length()
   while !self.eof() {
     if self.starts_with(end) {
       self.take(n)
-      return
+      return true
     }
     self.i = self.i + 1
   }
+  false
 }
 
 ///|
@@ -157,11 +158,17 @@ fn XmlParser::parse_attrs(
           self.i = self.i + 1
           self.skip_ws()
           match self.read_quoted() {
-            Ok(v) => attrs.set(local_name(raw), v)
+            Ok(v) => {
+              let key = local_name(raw)
+              if attrs.contains(key) {
+                return Err(BadXml("duplicate attribute: " + key))
+              }
+              attrs.set(key, v)
+            }
             Err(e) => return Err(e)
           }
         } else {
-          attrs.set(local_name(raw), raw)
+          return Err(BadXml("attribute must have a value: " + raw))
         }
       }
       None => return Err(BadXml("unterminated start tag"))
@@ -172,13 +179,18 @@ fn XmlParser::parse_attrs(
 
 ///|
 fn XmlParser::parse_node(self : XmlParser) -> Result[XmlNode, CslError] {
-  self.skip_misc()
+  match self.skip_misc() {
+    Err(e) => return Err(e)
+    Ok(_) => ()
+  }
   guard self.peek() is Some(c) else { return Err(BadXml("empty document")) }
   if c != '<' {
     return Ok(Text(self.read_text()))
   }
   if self.starts_with("<!--") {
-    self.skip_until("-->")
+    if !self.skip_until("-->") {
+      return Err(BadXml("unterminated comment"))
+    }
     return self.parse_node()
   }
   if self.starts_with("<![CDATA[") {
@@ -190,9 +202,10 @@ fn XmlParser::parse_node(self : XmlParser) -> Result[XmlNode, CslError] {
         None => break
       }
     }
-    if self.starts_with("]]>") {
-      self.take(3)
+    if !self.starts_with("]]>") {
+      return Err(BadXml("unterminated CDATA"))
     }
+    self.take(3)
     return Ok(Text(out.to_string()))
   }
   if self.starts_with("</") {
@@ -202,19 +215,24 @@ fn XmlParser::parse_node(self : XmlParser) -> Result[XmlNode, CslError] {
 }
 
 ///|
-fn XmlParser::skip_misc(self : XmlParser) -> Unit {
+fn XmlParser::skip_misc(self : XmlParser) -> Result[Unit, CslError] {
   while true {
     self.skip_ws()
     if self.starts_with("<?") {
-      self.skip_until("?>")
+      if !self.skip_until("?>") {
+        return Err(BadXml("unterminated processing instruction"))
+      }
     } else if self.starts_with("<!--") {
-      self.skip_until("-->")
+      if !self.skip_until("-->") {
+        return Err(BadXml("unterminated comment"))
+      }
     } else if self.starts_with("<!DOCTYPE") || self.starts_with("<!doctype") {
-      self.skip_until(">")
+      return Err(BadXml("DOCTYPE is not supported"))
     } else {
       break
     }
   }
+  Ok(())
 }
 
 ///|
@@ -257,26 +275,30 @@ fn XmlParser::parse_element_node(self : XmlParser) -> Result[XmlNode, CslError] 
     return Err(BadXml("malformed start tag for " + name))
   }
   let children : Array[XmlNode] = []
+  let mut closed = false
   while !self.eof() {
-    self.skip_ws()
     if self.starts_with("</") {
       self.take(2)
-      let end = local_name(self.read_name())
+      let end = self.read_name()
       self.skip_ws()
-      if self.peek() is Some('>') {
-        self.i = self.i + 1
+      if !(self.peek() is Some('>')) {
+        return Err(BadXml("unterminated end tag"))
       }
-      if end != "" && end != name {
-        return Err(BadXml("mismatched end tag: " + end + " vs " + name))
+      self.i = self.i + 1
+      if end != raw {
+        return Err(BadXml("mismatched end tag: " + end + " vs " + raw))
       }
+      closed = true
       break
     }
     if self.starts_with("<!--") {
-      self.skip_until("-->")
+      if !self.skip_until("-->") {
+        return Err(BadXml("unterminated comment"))
+      }
       continue
     }
     if self.peek() is Some('<') {
-      match self.parse_element_node() {
+      match self.parse_node() {
         Ok(n) => children.push(n)
         Err(e) => return Err(e)
       }
@@ -289,6 +311,9 @@ fn XmlParser::parse_element_node(self : XmlParser) -> Result[XmlNode, CslError] 
       }
     }
   }
+  if !closed {
+    return Err(BadXml("missing end tag: " + raw))
+  }
   Ok(Element({ name, attrs, children, }))
 }
 
@@ -300,7 +325,16 @@ pub fn parse_xml(input : String) -> Result[XmlElem, CslError] {
   }
   let p : XmlParser = { chars: input.to_array(), i: 0, }
   match p.parse_node() {
-    Ok(Element(e)) => Ok(e)
+    Ok(Element(e)) => {
+      match p.skip_misc() {
+        Err(err) => return Err(err)
+        Ok(_) => ()
+      }
+      if !p.eof() {
+        return Err(BadXml("content after document root"))
+      }
+      Ok(e)
+    }
     Ok(Text(_)) => Err(BadXml("document root must be an element"))
     Err(e) => Err(e)
   }
