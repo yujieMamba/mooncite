@@ -52,8 +52,10 @@ pub fn style_complexity(style_xml : String) -> Map[String, Int32] {
 pub fn style_is_numeric(style_xml : String) -> Bool {
   match parse_style(style_xml) {
     Ok(style) =>
-      style.citation_collapse == "citation-number" ||
-      style.citation_collapse == "citation-number"
+      match style.citation {
+        Some(layout) => numeric_layout(layout.children, style)
+        None => false
+      }
     Err(_) => false
   }
 }
@@ -61,7 +63,11 @@ pub fn style_is_numeric(style_xml : String) -> Bool {
 ///|
 pub fn style_is_author_date(style_xml : String) -> Bool {
   match parse_style(style_xml) {
-    Ok(style) => style.citation_collapse.is_empty()
+    Ok(style) =>
+      match style.citation {
+        Some(layout) => citation_has_author_date(layout.children, style)
+        None => false
+      }
     Err(_) => false
   }
 }

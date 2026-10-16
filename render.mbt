@@ -54,18 +54,25 @@ fn format_date(
   date : CslDate,
   parts : Array[DatePart],
   delimiter : String,
+  year_suffix~ : String = "",
+  locale~ : Locale = Locale::english(),
 ) -> String {
   let values = []
   for part in parts {
     let mut value = ""
     if part.name == "year" && date.year != 0 {
-      value = date.year.to_string()
+      value = date.year.to_string() + year_suffix
     }
     if part.name == "month" && date.month != 0 {
       value = if part.form == "numeric-leading-zeros" {
         pad2(date.month)
-      } else {
+      } else if part.form == "numeric" {
         date.month.to_string()
+      } else {
+        locale.month(
+          date.month,
+          form=if part.form.is_empty() { "long" } else { part.form },
+        )
       }
     }
     if part.name == "day" && date.day != 0 {
@@ -190,8 +197,10 @@ fn node_value(
           if !spec.value.is_empty() {
             spec.value
           } else if !spec.term.is_empty() {
-            if spec.term == "and" || spec.term == "et-al" {
-              style.locale.term(spec.term)
+            if spec.form.is_empty() || spec.form == "long" {
+              style.locale.terms
+              .get(spec.term)
+              .unwrap_or(term_for(spec.term, spec.form))
             } else {
               term_for(spec.term, spec.form)
             }
@@ -248,7 +257,21 @@ fn node_value(
         Some(d) =>
           apply_affix(
             affix,
-            output_escape(format_date(d, spec.parts, spec.delimiter), format),
+            output_escape(
+              format_date(
+                d,
+                spec.parts,
+                spec.delimiter,
+                locale=style.locale,
+                year_suffix=if style.citation_disambiguate &&
+                  !explicit_year_suffix(style) {
+                  item.string("year-suffix")
+                } else {
+                  ""
+                },
+              ),
+              format,
+            ),
             format~,
           )
         None => ""
@@ -393,6 +416,9 @@ pub fn Processor::render_bibliography(
   items : Array[Item],
   format~ : String = "text",
 ) -> Result[String, CslError] {
+  if format != "text" && format != "html" {
+    return Err(BadItem("unsupported output format: " + format))
+  }
   let style = context_style(self.style, false)
   let ordered = match prepare_items(items, style) {
     Ok(xs) => xs

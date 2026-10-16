@@ -166,6 +166,8 @@ pub fn safe_render_html(String, Array[Item]) -> String
 
 pub fn sentence_title(String) -> String
 
+pub fn style_compatibility_issues(String) -> Array[String]
+
 pub fn style_complexity(String) -> Map[String, Int]
 
 pub fn style_has_macro(String, String) -> Bool
@@ -391,6 +393,15 @@ pub fn Processor::render_bibliography_json(Self, String, format? : String) -> Re
 pub fn Processor::render_citation(Self, Array[Item], Array[Cite], format? : String) -> Result[String, CslError]
 pub fn Processor::render_citation_html(Self, Array[Item], Array[Cite]) -> Result[String, CslError]
 pub fn Processor::render_citation_json(Self, String, String, format? : String) -> Result[String, CslError]
+pub fn Processor::render_document(Self, Array[Item], Array[Array[Cite]], format? : String) -> Result[RenderedDocument, CslError]
+
+pub(all) struct RenderedDocument {
+  citations : Array[String]
+  bibliography : String
+} derive(Eq, @debug.Debug)
+pub fn RenderedDocument::equal(Self, Self) -> Bool
+pub fn RenderedDocument::not_equal(Self, Self) -> Bool
+pub fn RenderedDocument::to_repr(Self) -> @debug.Repr
 
 pub struct SortKey {
   variable : String

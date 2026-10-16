@@ -168,14 +168,16 @@ pub fn cites_to_plain_json(cites : Array[Cite]) -> String {
 ///|
 pub fn processor_capabilities() -> Array[String] {
   [
-    "CSL 1.0.2 style XML", "CSL-JSON item input", "names and dates", "choose/if conditions",
-    "sort keys", "HTML and text output", "citation and bibliography layouts", "locale term overrides",
+    "MoonCite 0.1.2 CSL subset (not full CSL 1.0.2)", "CSL-JSON item input", "names and dates",
+    "choose/if conditions", "sort keys", "HTML and text output", "citation and bibliography layouts",
+    "locale term overrides", "rendered-citation year-suffix disambiguation", "stateless document clusters",
+    "unsupported style diagnostics",
   ]
 }
 
 ///|
 pub fn processor_version() -> String {
-  "0.1.1"
+  "0.1.2"
 }
 
 ///|

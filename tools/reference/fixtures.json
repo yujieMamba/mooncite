@@ -671,5 +671,1041 @@
     ],
     "format": "text",
     "expected": "[Research & Development]"
+  },
+  {
+    "name": "suffix-bibliography-order",
+    "style": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" version=\"1.0\" class=\"in-text\"><info><title>Scope fixtures</title><id>http://example.org/mooncite-scope</id><updated>2026-10-16T00:00:00+00:00</updated></info><citation disambiguate-add-year-suffix=\"true\"><layout prefix=\"(\" suffix=\")\" delimiter=\"; \"><group delimiter=\" \"><names variable=\"author\"><name form=\"short\"/></names><group><date variable=\"issued\"><date-part name=\"year\"/></date></group></group></layout></citation><bibliography><sort><key variable=\"title\"/></sort><layout><group delimiter=\". \"><group delimiter=\" \"><names variable=\"author\"><name form=\"short\"/></names><group><date variable=\"issued\"><date-part name=\"year\"/></date></group></group><text variable=\"title\"/></group></layout></bibliography></style>",
+    "items": [
+      {
+        "id": "a",
+        "type": "article-journal",
+        "title": "Zulu",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "z",
+        "type": "article-journal",
+        "title": "Alpha",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      }
+    ],
+    "cites": [
+      {
+        "id": "a"
+      },
+      {
+        "id": "z"
+      }
+    ],
+    "expected": "(Doe 2025b; Doe 2025a)",
+    "bibliographyExpected": "Doe 2025a. Alpha\nDoe 2025b. Zulu",
+    "clusters": [
+      [
+        {
+          "id": "a"
+        }
+      ],
+      [
+        {
+          "id": "z"
+        }
+      ],
+      [
+        {
+          "id": "a"
+        }
+      ]
+    ],
+    "clusterExpected": [
+      "(Doe 2025b)",
+      "(Doe 2025a)",
+      "(Doe 2025b)"
+    ]
+  },
+  {
+    "name": "suffix-rendered-short-name-collision",
+    "style": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" version=\"1.0\" class=\"in-text\"><info><title>Scope fixtures</title><id>http://example.org/mooncite-scope</id><updated>2026-10-16T00:00:00+00:00</updated></info><citation disambiguate-add-year-suffix=\"true\"><layout prefix=\"(\" suffix=\")\" delimiter=\"; \"><group delimiter=\" \"><names variable=\"author\"><name form=\"short\"/></names><group><date variable=\"issued\"><date-part name=\"year\"/></date></group></group></layout></citation><bibliography><sort><key variable=\"title\"/></sort><layout><group delimiter=\". \"><group delimiter=\" \"><names variable=\"author\"><name form=\"short\"/></names><group><date variable=\"issued\"><date-part name=\"year\"/></date></group></group><text variable=\"title\"/></group></layout></bibliography></style>",
+    "items": [
+      {
+        "id": "a",
+        "type": "article-journal",
+        "title": "Alpha",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "b",
+        "type": "article-journal",
+        "title": "Beta",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "John"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      }
+    ],
+    "cites": [
+      {
+        "id": "a"
+      },
+      {
+        "id": "b"
+      }
+    ],
+    "expected": "(Doe 2025a; Doe 2025b)"
+  },
+  {
+    "name": "suffix-distinct-full-names-no-collision",
+    "style": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" version=\"1.0\" class=\"in-text\"><info><title>Scope fixtures</title><id>http://example.org/mooncite-scope</id><updated>2026-10-16T00:00:00+00:00</updated></info><citation disambiguate-add-year-suffix=\"true\"><layout prefix=\"(\" suffix=\")\" delimiter=\"; \"><group delimiter=\" \"><names variable=\"author\"><name initialize=\"false\"/></names><group><date variable=\"issued\"><date-part name=\"year\"/></date></group></group></layout></citation><bibliography><sort><key variable=\"title\"/></sort><layout><group delimiter=\". \"><group delimiter=\" \"><names variable=\"author\"><name initialize=\"false\"/></names><group><date variable=\"issued\"><date-part name=\"year\"/></date></group></group><text variable=\"title\"/></group></layout></bibliography></style>",
+    "items": [
+      {
+        "id": "a",
+        "type": "article-journal",
+        "title": "Alpha",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "b",
+        "type": "article-journal",
+        "title": "Beta",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "John"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      }
+    ],
+    "cites": [
+      {
+        "id": "a"
+      },
+      {
+        "id": "b"
+      }
+    ],
+    "expected": "(Jane Doe 2025; John Doe 2025)"
+  },
+  {
+    "name": "suffix-etal-collision",
+    "style": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" version=\"1.0\" class=\"in-text\"><info><title>Scope fixtures</title><id>http://example.org/mooncite-scope</id><updated>2026-10-16T00:00:00+00:00</updated></info><citation disambiguate-add-year-suffix=\"true\"><layout prefix=\"(\" suffix=\")\" delimiter=\"; \"><group delimiter=\" \"><names variable=\"author\"><name form=\"short\" et-al-min=\"2\" et-al-use-first=\"1\"/></names><group><date variable=\"issued\"><date-part name=\"year\"/></date></group></group></layout></citation><bibliography><sort><key variable=\"title\"/></sort><layout><group delimiter=\". \"><group delimiter=\" \"><names variable=\"author\"><name form=\"short\" et-al-min=\"2\" et-al-use-first=\"1\"/></names><group><date variable=\"issued\"><date-part name=\"year\"/></date></group></group><text variable=\"title\"/></group></layout></bibliography></style>",
+    "items": [
+      {
+        "id": "a",
+        "type": "article-journal",
+        "title": "Alpha",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          },
+          {
+            "family": "Li",
+            "given": "Wei"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "b",
+        "type": "article-journal",
+        "title": "Beta",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          },
+          {
+            "family": "Smith",
+            "given": "John"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      }
+    ],
+    "cites": [
+      {
+        "id": "a"
+      },
+      {
+        "id": "b"
+      }
+    ],
+    "expected": "(Doe et al. 2025a; Doe et al. 2025b)"
+  },
+  {
+    "name": "suffix-explicit-placement",
+    "style": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" version=\"1.0\" class=\"in-text\"><info><title>Scope fixtures</title><id>http://example.org/mooncite-scope</id><updated>2026-10-16T00:00:00+00:00</updated></info><citation disambiguate-add-year-suffix=\"true\"><layout prefix=\"(\" suffix=\")\" delimiter=\"; \"><group delimiter=\" \"><names variable=\"author\"><name form=\"short\"/></names><group><date variable=\"issued\"><date-part name=\"year\"/></date><text variable=\"year-suffix\"/></group></group></layout></citation><bibliography><sort><key variable=\"title\"/></sort><layout><group delimiter=\". \"><group delimiter=\" \"><names variable=\"author\"><name form=\"short\"/></names><group><date variable=\"issued\"><date-part name=\"year\"/></date><text variable=\"year-suffix\"/></group></group><text variable=\"title\"/></group></layout></bibliography></style>",
+    "items": [
+      {
+        "id": "a",
+        "type": "article-journal",
+        "title": "Alpha",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "b",
+        "type": "article-journal",
+        "title": "Beta",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      }
+    ],
+    "cites": [
+      {
+        "id": "a"
+      },
+      {
+        "id": "b"
+      }
+    ],
+    "expected": "(Doe 2025a; Doe 2025b)",
+    "bibliographyExpected": "Doe 2025a. Alpha\nDoe 2025b. Beta"
+  },
+  {
+    "name": "suffix-literal-organization",
+    "style": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" version=\"1.0\" class=\"in-text\"><info><title>Scope fixtures</title><id>http://example.org/mooncite-scope</id><updated>2026-10-16T00:00:00+00:00</updated></info><citation disambiguate-add-year-suffix=\"true\"><layout prefix=\"(\" suffix=\")\" delimiter=\"; \"><group delimiter=\" \"><names variable=\"author\"><name form=\"short\"/></names><group><date variable=\"issued\"><date-part name=\"year\"/></date></group></group></layout></citation><bibliography><sort><key variable=\"title\"/></sort><layout><group delimiter=\". \"><group delimiter=\" \"><names variable=\"author\"><name form=\"short\"/></names><group><date variable=\"issued\"><date-part name=\"year\"/></date></group></group><text variable=\"title\"/></group></layout></bibliography></style>",
+    "items": [
+      {
+        "id": "a",
+        "type": "report",
+        "title": "Alpha",
+        "author": [
+          {
+            "literal": "Research Group"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "b",
+        "type": "report",
+        "title": "Beta",
+        "author": [
+          {
+            "literal": "Research Group"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      }
+    ],
+    "cites": [
+      {
+        "id": "a"
+      },
+      {
+        "id": "b"
+      }
+    ],
+    "expected": "(Research Group 2025a; Research Group 2025b)"
+  },
+  {
+    "name": "suffix-title-already-distinguishes",
+    "style": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" version=\"1.0\" class=\"in-text\"><info><title>Scope fixtures</title><id>http://example.org/mooncite-scope</id><updated>2026-10-16T00:00:00+00:00</updated></info><citation disambiguate-add-year-suffix=\"true\"><layout prefix=\"(\" suffix=\")\" delimiter=\"; \"><group delimiter=\" \"><text variable=\"title\"/><names variable=\"author\"><name form=\"short\"/></names><group><date variable=\"issued\"><date-part name=\"year\"/></date></group></group></layout></citation><bibliography><sort><key variable=\"title\"/></sort><layout><group delimiter=\". \"><group delimiter=\" \"><text variable=\"title\"/><names variable=\"author\"><name form=\"short\"/></names><group><date variable=\"issued\"><date-part name=\"year\"/></date></group></group><text variable=\"title\"/></group></layout></bibliography></style>",
+    "items": [
+      {
+        "id": "a",
+        "type": "article-journal",
+        "title": "Alpha",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "b",
+        "type": "article-journal",
+        "title": "Beta",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      }
+    ],
+    "cites": [
+      {
+        "id": "a"
+      },
+      {
+        "id": "b"
+      }
+    ],
+    "expected": "(Alpha Doe 2025; Beta Doe 2025)"
+  },
+  {
+    "name": "suffix-beyond-z",
+    "style": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" version=\"1.0\" class=\"in-text\"><info><title>Scope fixtures</title><id>http://example.org/mooncite-scope</id><updated>2026-10-16T00:00:00+00:00</updated></info><citation disambiguate-add-year-suffix=\"true\"><layout prefix=\"(\" suffix=\")\" delimiter=\"; \"><group delimiter=\" \"><names variable=\"author\"><name form=\"short\"/></names><group><date variable=\"issued\"><date-part name=\"year\"/></date></group></group></layout></citation><bibliography><sort><key variable=\"title\"/></sort><layout><group delimiter=\". \"><group delimiter=\" \"><names variable=\"author\"><name form=\"short\"/></names><group><date variable=\"issued\"><date-part name=\"year\"/></date></group></group><text variable=\"title\"/></group></layout></bibliography></style>",
+    "items": [
+      {
+        "id": "0",
+        "type": "article-journal",
+        "title": "00",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "1",
+        "type": "article-journal",
+        "title": "01",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "2",
+        "type": "article-journal",
+        "title": "02",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "3",
+        "type": "article-journal",
+        "title": "03",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "4",
+        "type": "article-journal",
+        "title": "04",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "5",
+        "type": "article-journal",
+        "title": "05",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "6",
+        "type": "article-journal",
+        "title": "06",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "7",
+        "type": "article-journal",
+        "title": "07",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "8",
+        "type": "article-journal",
+        "title": "08",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "9",
+        "type": "article-journal",
+        "title": "09",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "10",
+        "type": "article-journal",
+        "title": "10",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "11",
+        "type": "article-journal",
+        "title": "11",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "12",
+        "type": "article-journal",
+        "title": "12",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "13",
+        "type": "article-journal",
+        "title": "13",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "14",
+        "type": "article-journal",
+        "title": "14",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "15",
+        "type": "article-journal",
+        "title": "15",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "16",
+        "type": "article-journal",
+        "title": "16",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "17",
+        "type": "article-journal",
+        "title": "17",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "18",
+        "type": "article-journal",
+        "title": "18",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "19",
+        "type": "article-journal",
+        "title": "19",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "20",
+        "type": "article-journal",
+        "title": "20",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "21",
+        "type": "article-journal",
+        "title": "21",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "22",
+        "type": "article-journal",
+        "title": "22",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "23",
+        "type": "article-journal",
+        "title": "23",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "24",
+        "type": "article-journal",
+        "title": "24",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "25",
+        "type": "article-journal",
+        "title": "25",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "26",
+        "type": "article-journal",
+        "title": "26",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "27",
+        "type": "article-journal",
+        "title": "27",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      }
+    ],
+    "cites": [
+      {
+        "id": "0"
+      },
+      {
+        "id": "1"
+      },
+      {
+        "id": "2"
+      },
+      {
+        "id": "3"
+      },
+      {
+        "id": "4"
+      },
+      {
+        "id": "5"
+      },
+      {
+        "id": "6"
+      },
+      {
+        "id": "7"
+      },
+      {
+        "id": "8"
+      },
+      {
+        "id": "9"
+      },
+      {
+        "id": "10"
+      },
+      {
+        "id": "11"
+      },
+      {
+        "id": "12"
+      },
+      {
+        "id": "13"
+      },
+      {
+        "id": "14"
+      },
+      {
+        "id": "15"
+      },
+      {
+        "id": "16"
+      },
+      {
+        "id": "17"
+      },
+      {
+        "id": "18"
+      },
+      {
+        "id": "19"
+      },
+      {
+        "id": "20"
+      },
+      {
+        "id": "21"
+      },
+      {
+        "id": "22"
+      },
+      {
+        "id": "23"
+      },
+      {
+        "id": "24"
+      },
+      {
+        "id": "25"
+      },
+      {
+        "id": "26"
+      },
+      {
+        "id": "27"
+      }
+    ],
+    "expected": "(Doe 2025a; Doe 2025b; Doe 2025c; Doe 2025d; Doe 2025e; Doe 2025f; Doe 2025g; Doe 2025h; Doe 2025i; Doe 2025j; Doe 2025k; Doe 2025l; Doe 2025m; Doe 2025n; Doe 2025o; Doe 2025p; Doe 2025q; Doe 2025r; Doe 2025s; Doe 2025t; Doe 2025u; Doe 2025v; Doe 2025w; Doe 2025x; Doe 2025y; Doe 2025z; Doe 2025aa; Doe 2025ab)"
+  },
+  {
+    "name": "suffix-explicit-citation-suppresses-automatic-bibliography",
+    "style": "<style xmlns=\"http://purl.org/net/xbiblio/csl\" version=\"1.0\" class=\"in-text\"><info><title>Scope fixtures</title><id>http://example.org/mooncite-scope</id><updated>2026-10-16T00:00:00+00:00</updated></info><citation disambiguate-add-year-suffix=\"true\"><layout prefix=\"(\" suffix=\")\" delimiter=\"; \"><group delimiter=\" \"><names variable=\"author\"><name form=\"short\"/></names><group><date variable=\"issued\"><date-part name=\"year\"/></date><text variable=\"year-suffix\"/></group></group></layout></citation><bibliography><sort><key variable=\"title\"/></sort><layout><group delimiter=\". \"><group delimiter=\" \"><names variable=\"author\"><name form=\"short\"/></names><group><date variable=\"issued\"><date-part name=\"year\"/></date></group></group><text variable=\"title\"/></group></layout></bibliography></style>",
+    "items": [
+      {
+        "id": "a",
+        "type": "article-journal",
+        "title": "Alpha",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      },
+      {
+        "id": "b",
+        "type": "article-journal",
+        "title": "Beta",
+        "author": [
+          {
+            "family": "Doe",
+            "given": "Jane"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        }
+      }
+    ],
+    "cites": [
+      {
+        "id": "a"
+      },
+      {
+        "id": "b"
+      }
+    ],
+    "expected": "(Doe 2025a; Doe 2025b)",
+    "bibliographyExpected": "Doe 2025. Alpha\nDoe 2025. Beta"
   }
 ]

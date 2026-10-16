@@ -181,6 +181,9 @@ pub fn item_author_year_key(item : Item) -> String {
 }
 
 ///|
+/// Metadata-only convenience, mutates its argument and groups author/year.
+/// This is NOT CSL disambiguation. Processor uses rendered-citation collisions,
+/// bibliography order and copied items; use Processor for citation processing.
 pub fn assign_year_suffixes(items : Array[Item]) -> Unit {
   let groups : Map[String, Array[Item]] = Map([])
   for item in items {

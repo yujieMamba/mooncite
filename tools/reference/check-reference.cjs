@@ -27,6 +27,15 @@ for (const fixture of fixtures) {
   engine.updateItems(fixture.items.map(item => item.id));
   const actual = engine.makeCitationCluster(fixture.cites);
   assert.equal(actual, fixture.expected, fixture.name);
+  if (fixture.bibliographyExpected !== undefined) {
+    // citeproc-js frames each bibliography entry with one terminal LF;
+    // remove that framing only, preserving all text inside each entry.
+    const bibliography = engine.makeBibliography()[1].map(x => x.replace(/\n$/, "")).join("\n");
+    assert.equal(bibliography, fixture.bibliographyExpected, fixture.name + " bibliography");
+  }
+  if (fixture.clusters) {
+    assert.deepEqual(fixture.clusters.map(cites => engine.makeCitationCluster(cites)), fixture.clusterExpected, fixture.name + " clusters");
+  }
   console.log(`PASS ${fixture.name}: ${actual}`);
 }
 console.log(`${fixtures.length}/${fixtures.length} citeproc-js reference fixtures passed`);
@@ -39,7 +48,17 @@ if (process.argv.includes("--generate")) {
     source += `  let p = @mooncite.Processor::from_style(${q(f.style)}).unwrap()\n`;
     source += `  let items = @mooncite.parse_items_json(${q(q(f.items))}).unwrap()\n`;
     source += `  let cites = @mooncite.parse_cites_json(${q(q(f.cites))}).unwrap()\n`;
-    source += `  assert_eq(p.render_citation(items, cites, format=${q(f.format || "text")}), Ok(${q(f.expected)}))\n}\n`;
+    source += `  assert_eq(p.render_citation(items, cites, format=${q(f.format || "text")}), Ok(${q(f.expected)}))\n`;
+    if (f.bibliographyExpected !== undefined) {
+      source += `  assert_eq(p.render_bibliography(items), Ok(${q(f.bibliographyExpected)}))\n`;
+    }
+    if (f.clusters) {
+      const cs = f.clusters.map(c => `@mooncite.parse_cites_json(${q(q(c))}).unwrap()`).join(", ");
+      source += `  let document = p.render_document(items, [${cs}]).unwrap()\n`;
+      source += `  assert_eq(document.citations, [${f.clusterExpected.map(q).join(", ")}])\n`;
+      source += `  assert_eq(document.bibliography, ${q(f.bibliographyExpected)})\n`;
+    }
+    source += `}\n`;
   }
   fs.writeFileSync(path.join(__dirname, "../../reference_test.mbt"), source);
 }

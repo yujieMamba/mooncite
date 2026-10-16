@@ -358,6 +358,10 @@ fn parse_style(style_xml : String) -> Result[Style, CslError] {
   guard root.name == "style" else {
     return Err(BadStyle("root element must be style"))
   }
+  let compatibility = profile_issues(root)
+  if !compatibility.is_empty() {
+    return Err(BadStyle(join_nonempty(compatibility, "; ")))
+  }
   let mut citation = None
   let mut bibliography = None
   let macros = Map([])
@@ -403,7 +407,7 @@ fn parse_style(style_xml : String) -> Result[Style, CslError] {
         }
       }
       "locale" => {
-        let language = child.attr("lang")
+        let language = child.attrs.get("xml:lang").unwrap_or(child.attr("lang"))
         if language.is_empty() || language == root.attr("default-locale") {
           if child.first("terms") is Some(terms) {
             for term in terms.kids_named("term") {
@@ -446,7 +450,33 @@ fn parse_style(style_xml : String) -> Result[Style, CslError] {
   }
   match validate_macro_graph(style) {
     Some(message) => Err(BadStyle(message))
-    None => Ok(style)
+    None => {
+      if style.citation_disambiguate && !explicit_year_suffix(style) {
+        if style.citation is Some(layout) {
+          if automatic_suffix_dates(layout.children, style) != 1 {
+            return Err(
+              BadStyle(
+                "automatic year-suffix requires exactly one issued/year date and no conditional/substitute placement; use explicit year-suffix text instead",
+              ),
+            )
+          }
+        } else {
+          return Err(
+            BadStyle("year-suffix disambiguation requires citation layout"),
+          )
+        }
+        if style.bibliography is Some(layout) {
+          if automatic_suffix_dates(layout.children, style) != 1 {
+            return Err(
+              BadStyle(
+                "automatic year-suffix bibliography requires exactly one issued/year date; use explicit year-suffix text instead",
+              ),
+            )
+          }
+        }
+      }
+      Ok(style)
+    }
   }
 }
 

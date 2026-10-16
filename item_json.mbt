@@ -134,6 +134,26 @@ fn parse_date_json(value : Json) -> CslDate? {
           }
         None => ()
       }
+      // Preserve range endpoints instead of silently discarding them. Rendering
+      // rejects ranges until the profile has complete range-formatting rules.
+      if obj.get("date-parts") is Some(v) {
+        if json_array(v) is Some(parts) && parts.get(1) is Some(v) {
+          if json_array(v) is Some(xs) {
+            date.end_year = match xs.get(0) {
+              Some(v) => json_int(v).unwrap_or(0)
+              None => 0
+            }
+            date.end_month = match xs.get(1) {
+              Some(v) => json_int(v).unwrap_or(0)
+              None => 0
+            }
+            date.end_day = match xs.get(2) {
+              Some(v) => json_int(v).unwrap_or(0)
+              None => 0
+            }
+          }
+        }
+      }
       Some(date)
     }
   }
@@ -289,6 +309,18 @@ pub fn parse_cites_json(json_text : String) -> Result[Array[Cite], CslError] {
         }
         if id.is_empty() {
           return Err(BadJson("citation id is required"))
+        }
+        for key, _ in obj {
+          if key != "id" &&
+            key != "locator" &&
+            key != "label" &&
+            key != "prefix" &&
+            key != "suffix" &&
+            key != "suppress-author" {
+            return Err(
+              BadJson("unsupported citation field (no history API): " + key),
+            )
+          }
         }
         let cite = Cite::new(id)
         match obj.get("locator") {

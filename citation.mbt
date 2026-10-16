@@ -5,6 +5,9 @@ pub fn Processor::render_citation(
   cites : Array[Cite],
   format~ : String = "text",
 ) -> Result[String, CslError] {
+  if format != "text" && format != "html" {
+    return Err(BadItem("unsupported output format: " + format))
+  }
   let style = context_style(self.style, true)
   let prepared = match prepare_items(items, context_style(self.style, false)) {
     Ok(xs) => xs

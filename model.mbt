@@ -189,7 +189,7 @@ pub fn Item::date(self : Item, variable : String) -> CslDate? {
 ///|
 pub fn Item::has(self : Item, variable : String) -> Bool {
   !self.string(variable).is_empty() ||
-  self.names.contains(variable) ||
+  !self.name(variable).is_empty() ||
   self.dates.contains(variable) ||
   self.numbers.contains(variable)
 }

@@ -118,6 +118,23 @@ fn prepare_items(
     if item.id.is_empty() || ids.contains(item.id) {
       return Err(BadItem("empty or duplicate item id: " + item.id))
     }
+    for variable, date in item.dates {
+      if date_is_range(date) || !date.literal.is_empty() {
+        return Err(
+          BadItem("unsupported date range/literal: " + item.id + "/" + variable),
+        )
+      }
+      if date.month < 0 || date.month > 12 || date.day < 0 || date.day > 31 {
+        return Err(
+          BadItem(
+            "date component out of supported bounds: " +
+            item.id +
+            "/" +
+            variable,
+          ),
+        )
+      }
+    }
     ids[item.id] = true
     let copy = copy_render_item(item)
     let explicit = item_value(item, "citation-number")
@@ -151,7 +168,10 @@ fn prepare_items(
   }
   // Limited author/year disambiguation works on copies, never on caller data.
   if style.citation_disambiguate {
-    assign_year_suffixes(ordered)
+    match assign_rendered_suffixes(ordered, style) {
+      Err(e) => return Err(e)
+      Ok(_) => ()
+    }
   }
   Ok(ordered)
 }
