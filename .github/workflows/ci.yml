@@ -45,6 +45,11 @@ jobs:
           grep -Fx '(Doe and Smith 2025)' names.out
           moon run cmd/main --target ${{ matrix.target }}
           moon run examples/text-extract --target ${{ matrix.target }}
+          moon run examples/document --target ${{ matrix.target }} | tee document.out
+          grep -Fx '(Doe 2025b)' document.out
+          grep -Fx 'Doe 2025a. Alpha' document.out
+          grep -F '/style/citation/@disambiguate-add-names: unsupported option' document.out
+          grep -F '/style/citation/layout/choose/if/@position: unsupported option' document.out
 
   reference:
     name: citeproc-js differential fixtures
