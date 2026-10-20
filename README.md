@@ -17,7 +17,7 @@ MoonCite 是 MoonBit 文献引用与参考文献排版库：输入 CSL XML 样�
 
 ## 从 GitHub 获取并运行
 
-当前源码使用 `moonc >= 0.10.15`（满足比赛要求的不低于 0.10.14）；建议使用官方工具链 2026-10-12 版或更新版本。本次修复版本为 **0.1.2**，尚未同步 MoonCakes；以下命令直接验证 GitHub 源码，不依赖 MoonCakes 上的旧版本。
+当前源码使用 `moonc >= 0.10.15`（满足比赛要求的不低于 0.10.14）；建议使用官方工具链 2026-10-12 版或更新版本。本版源码为 **0.1.2**。以下命令可直接验证 GitHub 源码。
 
 ```bash
 git clone https://github.com/yujieMamba/mooncite.git
@@ -33,7 +33,23 @@ moon run examples/numeric --target wasm-gc
 moon run examples/document --target wasm-gc
 ```
 
-`cmd/main` 和 `examples/*` 的 `moon.pkg` 演示了同一模块中的包依赖配置。可在这个源码模块内添加自己的可执行包，依赖 `yujieMamba/mooncite` 并使用别名 `@mooncite`；需要独立模块安装时，应等本版本发布后再按 MoonCakes 指定版本接入。
+## 从 MoonCakes 安装指定版本
+
+在已有 MoonBit 模块中执行：
+
+```bash
+moon add yujieMamba/mooncite@0.1.2
+```
+
+依赖该库的包在 `moon.pkg` 中加入：
+
+```moonbit
+import {
+  "yujieMamba/mooncite",
+}
+```
+
+代码通过 `@mooncite` 调用下方接口；`cmd/main` 和 `examples/*` 提供完整可运行源码。发布版本以 MoonCakes 注册表为准；验证源码时仍可使用上面的 GitHub 克隆方式。
 
 ## 最小用法
 
@@ -148,3 +164,7 @@ let document = processor.render_document(items, [
 ## 许可证
 
 生产库采用 Apache License 2.0。规范文档、参考项目和可选测试引擎的许可边界见 [THIRD_PARTY.md](THIRD_PARTY.md)。仓库不包含上游引用引擎源文件；开发对照工具不能被理解为生产库的运行时依赖。
+
+## AI 使用说明
+
+开发中使用了 AI 代码助手参与实现、测试设计和文档整理；最终交付以可复现的源码、测试及 CI 结果为准。详见 [AI_DISCLOSURE.md](AI_DISCLOSURE.md)。
