@@ -62,4 +62,4 @@ Windows；独立官方工具链 moon 0.1.20261012 (748b63c)，moonc v0.10.15+943
 
 不声明完整 CSL 1.0.2、完整消歧、引用历史、完整本地化、官方认证、100% 分支/标准覆盖率、性能领先或实际下游客户。范围以 docs/compatibility.md 为准；与 Typst/Hayagriva 的功能重叠及复用理由见 docs/ecosystem-value.md。
 
-源码版本 0.1.2；**MoonCakes 未发布**，等待用户登录并明确继续发布。GitHub 技术修复和测试成功也不表示主办方已通过复审。
+源码版本 0.1.2。补充记录（2026-10-20）：**MoonCakes 已发布 0.1.2**，校验和及无凭据消费者验证见 [发布验证](../publishing-verification.md)。GitHub 技术修复、发布和测试成功也不表示主办方已通过复审。
